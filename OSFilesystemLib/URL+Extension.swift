@@ -1,11 +1,11 @@
 import Foundation
 
 extension URL {
-    var urlPath: String {
+    public var urlPath: String {
         if #available(iOS 16.0, *) {
-            path()
+            path(percentEncoded: false)
         } else {
-            path
+            path.removingPercentEncoding ?? path
         }
     }
 

@@ -25,7 +25,7 @@ extension OSFILEManager: OSFILEDirectoryManager {
     }
 
     public func listDirectory(atURL pathURL: URL) throws -> [URL] {
-        return try fileManager.contentsOfDirectory(at: pathURL, includingPropertiesForKeys: nil)
+        try fileManager.contentsOfDirectory(at: pathURL, includingPropertiesForKeys: nil)
     }
 }
 
@@ -144,7 +144,7 @@ private extension OSFILEManager {
             throw OSFILEFileManagerError.directoryNotFound
         }
 
-        return path.isEmpty ? directoryURL : directoryURL.appendingPathComponent(path)
+        return path.isEmpty ? directoryURL : directoryURL.urlWithAppendingPath(path)
     }
 
     func resolveRawURL(from path: String) throws -> URL {
