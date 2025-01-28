@@ -7,7 +7,8 @@ public protocol OSFILEDirectoryManager {
 }
 
 public protocol OSFILEFileManager {
-    func readFile(atURL: URL, withEncoding: OSFILEEncoding) throws -> String
+    func readEntireFile(atURL: URL, withEncoding: OSFILEEncoding) throws -> String
+    func readFileInChunks(atURL: URL, withEncoding: OSFILEEncoding, andChunkSize: Int) throws -> OSFILEChunkPublisher
     func getFileURL(atPath: String, withSearchPath: OSFILESearchPath) throws -> URL
     func deleteFile(atURL: URL) throws
     func saveFile(atURL: URL, withEncodingAndData: OSFILEEncodingValueMapper, includeIntermediateDirectories: Bool) throws -> URL

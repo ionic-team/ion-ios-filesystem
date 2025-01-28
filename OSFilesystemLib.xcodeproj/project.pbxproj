@@ -11,6 +11,8 @@
 		751328DA2D318DBA0031BDD0 /* OSFILEDirectoryManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751328D92D318DBA0031BDD0 /* OSFILEDirectoryManagerTests.swift */; };
 		751328DB2D318E770031BDD0 /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751328D82D3179430031BDD0 /* MockFileManager.swift */; };
 		7575CF6A2BFCEE6F008F3FD0 /* OSFilesystemLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7575CF612BFCEE6F008F3FD0 /* OSFilesystemLib.framework */; };
+		75DA44542D48E435006DF7DE /* OSFILEChunkPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DA44532D48E435006DF7DE /* OSFILEChunkPublisher.swift */; };
+		75DA445A2D490051006DF7DE /* file_emojiContent.txt in Resources */ = {isa = PBXBuildFile; fileRef = 75DA44592D490051006DF7DE /* file_emojiContent.txt */; };
 		75F8380B2D37E42000FCE044 /* OSFILEItemAttributeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F8380A2D37E42000FCE044 /* OSFILEItemAttributeModel.swift */; };
 		75F84D662D39360E00892C89 /* OSFILEManager+Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F84D652D39360E00892C89 /* OSFILEManager+Errors.swift */; };
 		75F84D682D39362F00892C89 /* OSFILEManager+Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F84D672D39362F00892C89 /* OSFILEManager+Enums.swift */; };
@@ -36,6 +38,8 @@
 		751328D92D318DBA0031BDD0 /* OSFILEDirectoryManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSFILEDirectoryManagerTests.swift; sourceTree = "<group>"; };
 		7575CF612BFCEE6F008F3FD0 /* OSFilesystemLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OSFilesystemLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7575CF692BFCEE6F008F3FD0 /* OSFilesystemLibTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSFilesystemLibTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		75DA44532D48E435006DF7DE /* OSFILEChunkPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSFILEChunkPublisher.swift; sourceTree = "<group>"; };
+		75DA44592D490051006DF7DE /* file_emojiContent.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = file_emojiContent.txt; sourceTree = "<group>"; };
 		75F8380A2D37E42000FCE044 /* OSFILEItemAttributeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSFILEItemAttributeModel.swift; sourceTree = "<group>"; };
 		75F84D652D39360E00892C89 /* OSFILEManager+Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSFILEManager+Errors.swift"; sourceTree = "<group>"; };
 		75F84D672D39362F00892C89 /* OSFILEManager+Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSFILEManager+Enums.swift"; sourceTree = "<group>"; };
@@ -89,6 +93,7 @@
 				75F84D672D39362F00892C89 /* OSFILEManager+Enums.swift */,
 				75F84D652D39360E00892C89 /* OSFILEManager+Errors.swift */,
 				75FEB2AF2D3546D7007C2686 /* OSFILEManager+Protocols.swift */,
+				75DA44532D48E435006DF7DE /* OSFILEChunkPublisher.swift */,
 				75F8380A2D37E42000FCE044 /* OSFILEItemAttributeModel.swift */,
 				75FEB2B12D35470C007C2686 /* URL+Extension.swift */,
 			);
@@ -98,6 +103,7 @@
 		7575CF6D2BFCEE6F008F3FD0 /* OSFilesystemLibTests */ = {
 			isa = PBXGroup;
 			children = (
+				75DA44592D490051006DF7DE /* file_emojiContent.txt */,
 				751328D82D3179430031BDD0 /* MockFileManager.swift */,
 				751328D92D318DBA0031BDD0 /* OSFILEDirectoryManagerTests.swift */,
 				75FEB2B32D35479B007C2686 /* OSFILEFileManagerTests.swift */,
@@ -210,6 +216,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75DA445A2D490051006DF7DE /* file_emojiContent.txt in Resources */,
 				75FEB2B72D355F21007C2686 /* file.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -243,6 +250,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				75F8380B2D37E42000FCE044 /* OSFILEItemAttributeModel.swift in Sources */,
+				75DA44542D48E435006DF7DE /* OSFILEChunkPublisher.swift in Sources */,
 				75FEB2B02D3546D7007C2686 /* OSFILEManager+Protocols.swift in Sources */,
 				75F84D682D39362F00892C89 /* OSFILEManager+Enums.swift in Sources */,
 				751328D52D3175170031BDD0 /* OSFILEManager.swift in Sources */,

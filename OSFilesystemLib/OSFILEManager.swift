@@ -30,23 +30,20 @@ extension OSFILEManager: OSFILEDirectoryManager {
 }
 
 extension OSFILEManager: OSFILEFileManager {
-    public func readFile(atURL fileURL: URL, withEncoding encoding: OSFILEEncoding) throws -> String {
-        // Check if the URL requires security-scoped access
-        let requiresSecurityScope = fileURL.startAccessingSecurityScopedResource()
-
-        // Use defer to ensure we stop accessing the security-scoped resource
-        // only if we started accessing it
-        defer {
-            if requiresSecurityScope {
-                fileURL.stopAccessingSecurityScopedResource()
+    public func readEntireFile(atURL fileURL: URL, withEncoding encoding: OSFILEEncoding) throws -> String {
+        try withSecurityScopedAccess(to: fileURL) {
+            switch encoding {
+            case .byteBuffer:
+                try readFileAsBase64EncodedString(from: fileURL)
+            case .string(let stringEncoding):
+                try readFileAsString(from: fileURL, using: stringEncoding.stringEncoding)
             }
         }
+    }
 
-        return switch encoding {
-        case .byteBuffer:
-            try readFileAsBase64EncodedString(from: fileURL)
-        case .string(let stringEncoding):
-            try readFileAsString(from: fileURL, using: stringEncoding.stringEncoding)
+    public func readFileInChunks(atURL fileURL: URL, withEncoding encoding: OSFILEEncoding, andChunkSize chunkSize: Int) throws -> OSFILEChunkPublisher {
+        try withSecurityScopedAccess(to: fileURL) {
+            .init(fileURL, chunkSize, encoding)
         }
     }
 
@@ -131,6 +128,21 @@ extension OSFILEManager: OSFILEFileManager {
 }
 
 private extension OSFILEManager {
+    func withSecurityScopedAccess<T>(to fileURL: URL, perform operation: () throws -> T) throws -> T {
+        // Check if the URL requires security-scoped access
+        let requiresSecurityScope = fileURL.startAccessingSecurityScopedResource()
+
+        // Use defer to ensure we stop accessing the security-scoped resource
+        // only if we started accessing it
+        defer {
+            if requiresSecurityScope {
+                fileURL.stopAccessingSecurityScopedResource()
+            }
+        }
+
+        return try operation()
+    }
+
     func readFileAsBase64EncodedString(from fileURL: URL) throws -> String {
         try Data(contentsOf: fileURL).base64EncodedString()
     }

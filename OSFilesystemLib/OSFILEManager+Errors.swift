@@ -9,3 +9,7 @@ enum OSFILEFileManagerError: Error {
     case fileNotFound
     case missingParentFolder
 }
+
+enum OSFILEChunkPublisherError: Error {
+    case cantEncodeData
+}

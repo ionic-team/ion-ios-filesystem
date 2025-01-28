@@ -1,19 +1,30 @@
+import Combine
 import XCTest
 
 @testable import OSFilesystemLib
 
 final class OSFILEFileManagerTests: XCTestCase {
     private var sut: OSFILEManager!
+    private var cancellables: Set<AnyCancellable>!
+
+    override func setUp() {
+        cancellables = .init()
+    }
+
+    override func tearDown() {
+        cancellables = nil
+        sut = nil
+    }
 }
 
-// MARK: - 'readFile` tests
+// MARK: - 'readEntireFile` tests
 extension OSFILEFileManagerTests {
-    func test_readFile_withStringEncoding_returnsContentSuccessfully() throws {
+    func test_readEntireFile_withStringEncoding_returnsContentSuccessfully() throws {
         // Given
         createFileManager()
 
         // When
-        let fileContent = try fetchContent(
+        let fileContent = try fetchEntireContent(
             forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .string(encoding: .utf8)
         )
 
@@ -21,17 +32,59 @@ extension OSFILEFileManagerTests {
         XCTAssertEqual(fileContent, Configuration.fileContent)
     }
 
-    func test_readFile_withByteBufferEncoding_returnsContentSuccessfully() throws {
+    func test_readEntireFile_withByteBufferEncoding_returnsContentSuccessfully() throws {
         // Given
         createFileManager()
 
         // When
-        let fileContent = try fetchContent(
+        let fileContent = try fetchEntireContent(
             forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .byteBuffer
         )
 
         // Then
         XCTAssertEqual(fileContent, Configuration.fileContent)
+    }
+}
+
+// MARK: - 'readFileInChunks' tests
+extension OSFILEFileManagerTests {
+    func test_readFileInChunks_withStringEncoding_returnsContentSuccessfully() throws {
+        // Given
+        createFileManager()
+
+        // When
+        let fileContent = try fetchChunkedContent(
+            forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .string(encoding: .utf8)
+        )
+
+        // Then
+        XCTAssertEqual(fileContent, Configuration.fileContent)
+    }
+
+    func test_readFileInChunks_withByteBufferEncoding_returnsContentSuccessfully() throws {
+        // Given
+        createFileManager()
+
+        // When
+        let fileContent = try fetchChunkedContent(
+            forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .byteBuffer
+        )
+
+        // Then
+        XCTAssertEqual(fileContent, Configuration.fileContent)
+    }
+
+    func test_readFileInChunks_withInvalidContent_returnsError() {
+        // Given
+        createFileManager()
+
+        // When
+        XCTAssertThrowsError(try fetchChunkedContent(
+            forFile: (Configuration.fileWithEmojiName, Configuration.fileExtension), withEncoding: .string(encoding: .ascii)
+        )) {
+            // Then
+            XCTAssertEqual($0 as? OSFILEChunkPublisherError, .cantEncodeData)
+        }
     }
 }
 
@@ -245,7 +298,7 @@ extension OSFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
         XCTAssertEqual(savedFileURL, fileURL)
 
-        let savedFileContent = try fetchContent(
+        let savedFileContent = try fetchEntireContent(
             forFile: (Configuration.newFileName, Configuration.fileExtension), withEncoding: .string(encoding: stringEncoding)
         )
         XCTAssertEqual(savedFileContent, contentToSave)
@@ -274,7 +327,7 @@ extension OSFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
         XCTAssertEqual(savedFileURL, fileURL)
 
-        let savedFileContent = try fetchContent(
+        let savedFileContent = try fetchEntireContent(
             forFile: (Configuration.newFileName, Configuration.fileExtension), withEncoding: .byteBuffer
         )
         XCTAssertEqual(savedFileContent, contentToSave)
@@ -305,7 +358,7 @@ extension OSFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedPath, parentFolderURL)
         XCTAssertEqual(savedFileURL, fileURL)
 
-        let savedFileContent = try fetchContent(
+        let savedFileContent = try fetchEntireContent(
             forFile: (Configuration.newFileName, Configuration.fileExtension), withEncoding: .string(encoding: stringEncoding)
         )
         XCTAssertEqual(savedFileContent, contentToSave)
@@ -354,7 +407,7 @@ extension OSFILEFileManagerTests {
         )
 
         // Then
-        let savedFileContent = try fetchContent(
+        let savedFileContent = try fetchEntireContent(
             forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .string(encoding: stringEncoding)
         )
 
@@ -382,7 +435,7 @@ extension OSFILEFileManagerTests {
         )
 
         // Then
-        let savedFileContent = try fetchContent(
+        let savedFileContent = try fetchEntireContent(
             forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .byteBuffer
         )
 
@@ -417,7 +470,7 @@ extension OSFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
 
         // Then
-        let savedFileContent = try fetchContent(
+        let savedFileContent = try fetchEntireContent(
             forFile: (Configuration.newFileName, Configuration.fileExtension), withEncoding: .string(encoding: stringEncoding)
         )
 
@@ -693,6 +746,7 @@ extension OSFILEFileManagerTests {
 private extension OSFILEFileManagerTests {
     struct Configuration {
         static let fileName = "file"
+        static let fileWithEmojiName = "file_emojiContent"
         static let newFileName = "new_file"
         static let fileExtension = "txt"
         static let fileContent = "Hello, world!"
@@ -751,9 +805,41 @@ private extension OSFILEFileManagerTests {
         return fileManager
     }
 
-    func fetchContent(forFile file: (name: String, extension: String), withEncoding encoding: OSFILEEncoding) throws -> String {
+    func fetchEntireContent(forFile file: (name: String, extension: String), withEncoding encoding: OSFILEEncoding) throws -> String {
         let fileURL = try XCTUnwrap(Bundle(for: type(of: self)).url(forResource: file.name, withExtension: file.extension))
-        let fileURLContent = try sut.readFile(atURL: fileURL, withEncoding: encoding)
+        return try treatContent(withEncoding: encoding) {
+            try sut.readEntireFile(atURL: fileURL, withEncoding: encoding)
+        }
+    }
+
+    func fetchChunkedContent(forFile file: (name: String, extension: String), withEncoding encoding: OSFILEEncoding) throws -> String {
+        let fileURL = try XCTUnwrap(Bundle(for: type(of: self)).url(forResource: file.name, withExtension: file.extension))
+        return try treatContent(withEncoding: encoding) {
+            var result = String()
+            var error: Error?
+            let expectation = XCTestExpectation(description: "Wait for chunks to be processed")
+
+            try sut.readFileInChunks(atURL: fileURL, withEncoding: encoding, andChunkSize: 3)   // 3 bytes
+                .sink(receiveCompletion: { completion in
+                    if case .failure(let failure) = completion {
+                        error = failure
+                    }
+                    expectation.fulfill()
+                }, receiveValue: {
+                    result.append($0)
+                })
+                .store(in: &cancellables)
+
+            // Wait for all chunks to be processed
+            wait(for: [expectation], timeout: 1.0)
+
+            if let error { throw error }
+            return result
+        }
+    }
+
+    func treatContent(withEncoding encoding: OSFILEEncoding, afterReading readOperation: () throws -> String) throws -> String {
+        let fileURLContent = try readOperation()
 
         var fileURLUnicodeScalars: String.UnicodeScalarView
         if case .byteBuffer = encoding {
