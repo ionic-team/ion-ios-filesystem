@@ -30,7 +30,7 @@ private class OSFILEChunkSubscription<S: Subscriber>: Subscription where S.Input
 
     init(_ url: URL, _ chunkSize: Int, _ encoding: OSFILEEncoding, _ subscriber: S) {
         self.fileHandle = try? FileHandle(forReadingFrom: url)
-        self.chunkSize = chunkSize
+        self.chunkSize = Self.chunkSizeToUse(basedOn: chunkSize, and: encoding)
         self.encoding = encoding
         self.subscriber = subscriber
     }
@@ -70,8 +70,14 @@ private class OSFILEChunkSubscription<S: Subscriber>: Subscription where S.Input
     deinit {
         fileHandle?.closeFile()
     }
+}
 
-    private func complete(withValue value: Subscribers.Completion<Error>) {
+private extension OSFILEChunkSubscription {
+    static func chunkSizeToUse(basedOn chunkSize: Int, and encoding: OSFILEEncoding) -> Int {
+        encoding == .byteBuffer ? chunkSize - chunkSize % 3 + 3 : chunkSize
+    }
+
+    func complete(withValue value: Subscribers.Completion<Error>) {
         isCompleted = true
         subscriber.receive(completion: value)
     }

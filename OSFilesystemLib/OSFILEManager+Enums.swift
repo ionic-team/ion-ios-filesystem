@@ -1,6 +1,6 @@
 import Foundation
 
-public enum OSFILEEncoding {
+public enum OSFILEEncoding: Equatable {
     case byteBuffer
     case string(encoding: OSFILEStringEncoding)
 }
