@@ -36,6 +36,7 @@
 		751328D42D3175170031BDD0 /* IONFILEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONFILEManager.swift; sourceTree = "<group>"; };
 		751328D82D3179430031BDD0 /* MockFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
 		751328D92D318DBA0031BDD0 /* IONFILEDirectoryManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONFILEDirectoryManagerTests.swift; sourceTree = "<group>"; };
+		754D90BC2D4BD81000AD7FD4 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		7575CF612BFCEE6F008F3FD0 /* IONFilesystemLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IONFilesystemLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7575CF692BFCEE6F008F3FD0 /* IONFilesystemLibTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IONFilesystemLibTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		75DA44532D48E435006DF7DE /* IONFILEChunkPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONFILEChunkPublisher.swift; sourceTree = "<group>"; };
@@ -71,6 +72,7 @@
 		7575CF572BFCEE6F008F3FD0 = {
 			isa = PBXGroup;
 			children = (
+				754D90BC2D4BD81000AD7FD4 /* Package.swift */,
 				7575CF632BFCEE6F008F3FD0 /* IONFilesystemLib */,
 				7575CF6D2BFCEE6F008F3FD0 /* IONFilesystemLibTests */,
 				7575CF622BFCEE6F008F3FD0 /* Products */,
