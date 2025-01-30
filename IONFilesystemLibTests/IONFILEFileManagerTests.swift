@@ -1,10 +1,10 @@
 import Combine
 import XCTest
 
-@testable import OSFilesystemLib
+@testable import IONFilesystemLib
 
-final class OSFILEFileManagerTests: XCTestCase {
-    private var sut: OSFILEManager!
+final class IONFILEFileManagerTests: XCTestCase {
+    private var sut: IONFILEManager!
     private var cancellables: Set<AnyCancellable>!
 
     override func setUp() {
@@ -18,7 +18,7 @@ final class OSFILEFileManagerTests: XCTestCase {
 }
 
 // MARK: - 'readEntireFile` tests
-extension OSFILEFileManagerTests {
+extension IONFILEFileManagerTests {
     func test_readEntireFile_withStringEncoding_returnsContentSuccessfully() throws {
         // Given
         createFileManager()
@@ -47,7 +47,7 @@ extension OSFILEFileManagerTests {
 }
 
 // MARK: - 'readFileInChunks' tests
-extension OSFILEFileManagerTests {
+extension IONFILEFileManagerTests {
     func test_readFileInChunks_withStringEncoding_returnsContentSuccessfully() throws {
         // Given
         createFileManager()
@@ -83,7 +83,7 @@ extension OSFILEFileManagerTests {
             forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .string(encoding: .utf8), forceURLError: true
         )) {
             // Then
-            XCTAssertEqual($0 as? OSFILEChunkPublisherError, .notAbleToReadFile)
+            XCTAssertEqual($0 as? IONFILEChunkPublisherError, .notAbleToReadFile)
         }
     }
 
@@ -96,19 +96,19 @@ extension OSFILEFileManagerTests {
             forFile: (Configuration.fileWithEmojiName, Configuration.fileExtension), withEncoding: .string(encoding: .ascii)
         )) {
             // Then
-            XCTAssertEqual($0 as? OSFILEChunkPublisherError, .cantEncodeData)
+            XCTAssertEqual($0 as? IONFILEChunkPublisherError, .cantEncodeData)
         }
     }
 }
 
 // MARK: - 'getFileURL' tests
-extension OSFILEFileManagerTests {
+extension IONFILEFileManagerTests {
     func test_getFileURL_fromDirectorySearchPath_containingSingleFile_returnsFileSuccessfully() throws {
         // Given
         let fileURL: URL = try XCTUnwrap(.init(string: "/file/directory"))
         let fileManager = createFileManager(urlsWithinDirectory: [fileURL])
         let filePath = "/test/directory"
-        let directoryType = OSFILEDirectoryType.cache
+        let directoryType = IONFILEDirectoryType.cache
 
         // When
         let returnedURL = try sut.getFileURL(atPath: filePath, withSearchPath: .directory(type: directoryType))
@@ -124,7 +124,7 @@ extension OSFILEFileManagerTests {
         let ignoredFileURL: URL = try XCTUnwrap(.init(string: "another_file/directory"))
         let fileManager = createFileManager(urlsWithinDirectory: [fileURL, ignoredFileURL])
         let filePath = "/test/directory"
-        let directoryType = OSFILEDirectoryType.cache
+        let directoryType = IONFILEDirectoryType.cache
 
         // When
         let returnedURL = try sut.getFileURL(atPath: filePath, withSearchPath: .directory(type: directoryType))
@@ -139,7 +139,7 @@ extension OSFILEFileManagerTests {
         let fileURL: URL = try XCTUnwrap(.init(string: "/file/directory"))
         let fileManager = createFileManager(urlsWithinDirectory: [fileURL])
         let filePath = "/test/directory"
-        let directoryType = OSFILEDirectoryType.document
+        let directoryType = IONFILEDirectoryType.document
 
         // When
         let returnedURL = try sut.getFileURL(atPath: filePath, withSearchPath: .directory(type: directoryType))
@@ -154,7 +154,7 @@ extension OSFILEFileManagerTests {
         let fileURL: URL = try XCTUnwrap(.init(string: "/file/directory"))
         let fileManager = createFileManager(urlsWithinDirectory: [fileURL])
         let filePath = "/test/directory"
-        let directoryType = OSFILEDirectoryType.library
+        let directoryType = IONFILEDirectoryType.library
 
         // When
         let returnedURL = try sut.getFileURL(atPath: filePath, withSearchPath: .directory(type: directoryType))
@@ -169,7 +169,7 @@ extension OSFILEFileManagerTests {
         let fileURL: URL = try XCTUnwrap(.init(string: "/file/directory"))
         let fileManager = createFileManager(urlsWithinDirectory: [fileURL])
         let filePath = "/test/directory"
-        let directoryType = OSFILEDirectoryType.notSyncedLibrary
+        let directoryType = IONFILEDirectoryType.notSyncedLibrary
 
         // When
         let returnedURL = try sut.getFileURL(atPath: filePath, withSearchPath: .directory(type: directoryType))
@@ -185,7 +185,7 @@ extension OSFILEFileManagerTests {
         let fileURL: URL = parentFolderURL.appending(path: "/directory")
         let fileManager = createFileManager(urlsWithinDirectory: [fileURL], mockTemporaryDirectory: parentFolderURL)
         let filePath = "/test/directory"
-        let directoryType = OSFILEDirectoryType.temporary
+        let directoryType = IONFILEDirectoryType.temporary
 
         // When
         let returnedURL = try sut.getFileURL(atPath: filePath, withSearchPath: .directory(type: directoryType))
@@ -199,12 +199,12 @@ extension OSFILEFileManagerTests {
         // Given
         createFileManager()
         let filePath = "/test/directory"
-        let directoryType = OSFILEDirectoryType.cache
+        let directoryType = IONFILEDirectoryType.cache
 
         // When
         XCTAssertThrowsError(try sut.getFileURL(atPath: filePath, withSearchPath: .directory(type: directoryType))) {
             // Then
-            XCTAssertEqual($0 as? OSFILEFileManagerError, .directoryNotFound)
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .directoryNotFound)
         }
     }
 
@@ -213,7 +213,7 @@ extension OSFILEFileManagerTests {
         let fileURL: URL = try XCTUnwrap(.init(string: "/file/directory"))
         let fileManager = createFileManager(urlsWithinDirectory: [fileURL])
         let emptyFilePath = ""
-        let directoryType = OSFILEDirectoryType.cache
+        let directoryType = IONFILEDirectoryType.cache
 
         // When
         let returnedURL = try sut.getFileURL(atPath: emptyFilePath, withSearchPath: .directory(type: directoryType))
@@ -243,13 +243,13 @@ extension OSFILEFileManagerTests {
         // When
         XCTAssertThrowsError(try sut.getFileURL(atPath: emptyFilePath, withSearchPath: .raw)) {
             // Then
-            XCTAssertEqual($0 as? OSFILEFileManagerError, .cantCreateURL)
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .cantCreateURL)
         }
     }
 }
 
 // MARK: - 'deleteFile' tests
-extension OSFILEFileManagerTests {
+extension IONFILEFileManagerTests {
     func test_deleteFile_shouldBeSuccessful() throws {
         // Given
         let fileManager = createFileManager()
@@ -270,7 +270,7 @@ extension OSFILEFileManagerTests {
         // When
         XCTAssertThrowsError(try sut.deleteFile(atURL: filePath)) {
             // Then
-            XCTAssertEqual($0 as? OSFILEFileManagerError, .fileNotFound)
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .fileNotFound)
         }
     }
 
@@ -289,14 +289,14 @@ extension OSFILEFileManagerTests {
 }
 
 // MARK: - 'saveFile' tests
-extension OSFILEFileManagerTests {
+extension IONFILEFileManagerTests {
     func test_saveFile_withStringEncoding_savesFileSuccessfullyAndReturnsItsURL() throws {
         // Given
         let fileManager = createFileManager()
         let fileURL = try XCTUnwrap(fetchConfigurationFile())
             .deletingLastPathComponent()
             .appending(path: "\(Configuration.newFileName).\(Configuration.fileExtension)")
-        let stringEncoding = OSFILEStringEncoding.ascii
+        let stringEncoding = IONFILEStringEncoding.ascii
         let contentToSave = Configuration.stringEncodedFileContent
         let shouldIncludeIntermediateDirectories = false
 
@@ -355,7 +355,7 @@ extension OSFILEFileManagerTests {
             .deletingLastPathComponent()
         let fileURL = parentFolderURL
             .appending(path: "\(Configuration.newFileName).\(Configuration.fileExtension)")
-        let stringEncoding = OSFILEStringEncoding.ascii
+        let stringEncoding = IONFILEStringEncoding.ascii
         let contentToSave = Configuration.stringEncodedFileContent
         let shouldIncludeIntermediateDirectories = true
 
@@ -387,7 +387,7 @@ extension OSFILEFileManagerTests {
             .deletingLastPathComponent()
         let fileURL = parentFolderURL
             .appending(path: "\(Configuration.newFileName).\(Configuration.fileExtension)")
-        let stringEncoding = OSFILEStringEncoding.ascii
+        let stringEncoding = IONFILEStringEncoding.ascii
         let contentToSave = Configuration.stringEncodedFileContent
         let shouldIncludeIntermediateDirectories = false
 
@@ -398,18 +398,18 @@ extension OSFILEFileManagerTests {
             includeIntermediateDirectories: shouldIncludeIntermediateDirectories)
         ) {
             // Then
-            XCTAssertEqual($0 as? OSFILEFileManagerError, .missingParentFolder)
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .missingParentFolder)
         }
     }
 }
 
 // MARK: - 'appendData' tests
-extension OSFILEFileManagerTests {
+extension IONFILEFileManagerTests {
     func test_appendData_withStringEncoding_savesFileSuccessfully() throws {
         // Given
         createFileManager()
         let fileURL = try XCTUnwrap(fetchConfigurationFile())
-        let stringEncoding = OSFILEStringEncoding.ascii
+        let stringEncoding = IONFILEStringEncoding.ascii
         let contentToAdd = Configuration.fileExtendedContent
 
         // When
@@ -468,7 +468,7 @@ extension OSFILEFileManagerTests {
             .deletingLastPathComponent()
         let fileURL = parentFolderURL
             .appending(path: "\(Configuration.newFileName).\(Configuration.fileExtension)")
-        let stringEncoding = OSFILEStringEncoding.ascii
+        let stringEncoding = IONFILEStringEncoding.ascii
         let contentToAdd = Configuration.stringEncodedFileContent
         let shouldIncludeIntermediateDirectories = true
 
@@ -497,7 +497,7 @@ extension OSFILEFileManagerTests {
         // Given
         createFileManager()
         let fileURL = try XCTUnwrap(fetchConfigurationFile())
-        let stringEncoding = OSFILEStringEncoding.ascii
+        let stringEncoding = IONFILEStringEncoding.ascii
         let contentToAdd = Configuration.emojiContent   // ASCII can't represent emoji so the conversion will fail.
 
         // When
@@ -507,13 +507,13 @@ extension OSFILEFileManagerTests {
             includeIntermediateDirectories: false)
         ) {
             // Then
-            XCTAssertEqual($0 as? OSFILEFileManagerError, .cantDecodeData)
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .cantDecodeData)
         }
     }
 }
 
 // MARK: - 'getItemAttributes' tests
-extension OSFILEFileManagerTests {
+extension IONFILEFileManagerTests {
     func test_getItemAttributes_forFile_returnsFileAttributeModelSuccessfully() throws {
         // Given
         let currentDate = Date()
@@ -609,7 +609,7 @@ extension OSFILEFileManagerTests {
 }
 
 // MARK: - 'renameItem' tests
-extension OSFILEFileManagerTests {
+extension IONFILEFileManagerTests {
     func test_renameItem_shouldBeSuccessful() throws {
         // Given
         let fileManager = createFileManager(fileExists: false)
@@ -683,7 +683,7 @@ extension OSFILEFileManagerTests {
 }
 
 // MARK: - 'copyItem' tests
-extension OSFILEFileManagerTests {
+extension IONFILEFileManagerTests {
     func test_copyItem_shouldBeSuccessful() throws {
         // Given
         let fileManager = createFileManager(fileExists: false)
@@ -756,7 +756,7 @@ extension OSFILEFileManagerTests {
     }
 }
 
-private extension OSFILEFileManagerTests {
+private extension IONFILEFileManagerTests {
     struct Configuration {
         static let fileName = "file"
         static let fileWithEmojiName = "file_emojiContent"
@@ -813,19 +813,19 @@ private extension OSFILEFileManagerTests {
             shouldBeDirectory: shouldBeDirectory,
             mockTemporaryDirectory: mockTemporaryDirectory
         )
-        sut = OSFILEManager(fileManager: fileManager)
+        sut = IONFILEManager(fileManager: fileManager)
 
         return fileManager
     }
 
-    func fetchEntireContent(forFile file: (name: String, extension: String), withEncoding encoding: OSFILEEncoding) throws -> String {
+    func fetchEntireContent(forFile file: (name: String, extension: String), withEncoding encoding: IONFILEEncoding) throws -> String {
         let fileURL = try XCTUnwrap(Bundle(for: type(of: self)).url(forResource: file.name, withExtension: file.extension))
         return try treatContent(withEncoding: encoding) {
             try sut.readEntireFile(atURL: fileURL, withEncoding: encoding)
         }
     }
 
-    func fetchChunkedContent(forFile file: (name: String, extension: String), withEncoding encoding: OSFILEEncoding, forceURLError: Bool = false) throws -> String {
+    func fetchChunkedContent(forFile file: (name: String, extension: String), withEncoding encoding: IONFILEEncoding, forceURLError: Bool = false) throws -> String {
         var fileURL = try XCTUnwrap(Bundle(for: type(of: self)).url(forResource: file.name, withExtension: file.extension))
         return try treatContent(withEncoding: encoding) {
             var result = String()
@@ -854,7 +854,7 @@ private extension OSFILEFileManagerTests {
         }
     }
 
-    func treatContent(withEncoding encoding: OSFILEEncoding, afterReading readOperation: () throws -> String) throws -> String {
+    func treatContent(withEncoding encoding: IONFILEEncoding, afterReading readOperation: () throws -> String) throws -> String {
         let fileURLContent = try readOperation()
 
         var fileURLUnicodeScalars: String.UnicodeScalarView

@@ -1,34 +1,34 @@
 import Combine
 import Foundation
 
-public class OSFILEChunkPublisher: Publisher {
+public class IONFILEChunkPublisher: Publisher {
     public typealias Output = String
     public typealias Failure = Error
 
     private let url: URL
     private let chunkSize: Int
-    private let encoding: OSFILEEncoding
+    private let encoding: IONFILEEncoding
 
-    init(_ url: URL, _ chunkSize: Int, _ encoding: OSFILEEncoding) {
+    init(_ url: URL, _ chunkSize: Int, _ encoding: IONFILEEncoding) {
         self.url = url
         self.chunkSize = chunkSize
         self.encoding = encoding
     }
 
     public func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Output == S.Input {
-        let subscription = OSFILEChunkSubscription(url, chunkSize, encoding, subscriber)
+        let subscription = IONFILEChunkSubscription(url, chunkSize, encoding, subscriber)
         subscriber.receive(subscription: subscription)
     }
 }
 
-private class OSFILEChunkSubscription<S: Subscriber>: Subscription where S.Input == String, S.Failure == Error {
+private class IONFILEChunkSubscription<S: Subscriber>: Subscription where S.Input == String, S.Failure == Error {
     private let fileHandle: FileHandle?
     private let chunkSize: Int
-    private let encoding: OSFILEEncoding
+    private let encoding: IONFILEEncoding
     private let subscriber: S
     private var isCompleted = false
 
-    init(_ url: URL, _ chunkSize: Int, _ encoding: OSFILEEncoding, _ subscriber: S) {
+    init(_ url: URL, _ chunkSize: Int, _ encoding: IONFILEEncoding, _ subscriber: S) {
         self.fileHandle = try? FileHandle(forReadingFrom: url)
         self.chunkSize = Self.chunkSizeToUse(basedOn: chunkSize, and: encoding)
         self.encoding = encoding
@@ -37,7 +37,7 @@ private class OSFILEChunkSubscription<S: Subscriber>: Subscription where S.Input
 
     func request(_ demand: Subscribers.Demand) {
         guard let fileHandle = fileHandle, !isCompleted else {
-            return subscriber.receive(completion: .failure(OSFILEChunkPublisherError.notAbleToReadFile))
+            return subscriber.receive(completion: .failure(IONFILEChunkPublisherError.notAbleToReadFile))
         }
 
         while demand > .none {
@@ -48,7 +48,7 @@ private class OSFILEChunkSubscription<S: Subscriber>: Subscription where S.Input
                     case .byteBuffer: chunkToEmit = chunk.base64EncodedString()
                     case .string(let encoding):
                         guard let chunkText = String(data: chunk, encoding: encoding.stringEncoding) else {
-                            throw OSFILEChunkPublisherError.cantEncodeData
+                            throw IONFILEChunkPublisherError.cantEncodeData
                         }
                         chunkToEmit = chunkText
                     }
@@ -74,8 +74,8 @@ private class OSFILEChunkSubscription<S: Subscriber>: Subscription where S.Input
     }
 }
 
-private extension OSFILEChunkSubscription {
-    static func chunkSizeToUse(basedOn chunkSize: Int, and encoding: OSFILEEncoding) -> Int {
+private extension IONFILEChunkSubscription {
+    static func chunkSizeToUse(basedOn chunkSize: Int, and encoding: IONFILEEncoding) -> Int {
         encoding == .byteBuffer ? chunkSize - chunkSize % 3 + 3 : chunkSize
     }
 

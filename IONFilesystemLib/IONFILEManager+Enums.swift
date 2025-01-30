@@ -1,16 +1,16 @@
 import Foundation
 
-public enum OSFILEEncoding: Equatable {
+public enum IONFILEEncoding: Equatable {
     case byteBuffer
-    case string(encoding: OSFILEStringEncoding)
+    case string(encoding: IONFILEStringEncoding)
 }
 
-public enum OSFILEEncodingValueMapper {
+public enum IONFILEEncodingValueMapper {
     case byteBuffer(value: Data)
-    case string(encoding: OSFILEStringEncoding, value: String)
+    case string(encoding: IONFILEStringEncoding, value: String)
 }
 
-public enum OSFILEStringEncoding {
+public enum IONFILEStringEncoding {
     case ascii
     case utf8
     case utf16
@@ -24,12 +24,12 @@ public enum OSFILEStringEncoding {
     }
 }
 
-public enum OSFILESearchPath {
-    case directory(type: OSFILEDirectoryType)
+public enum IONFILESearchPath {
+    case directory(type: IONFILEDirectoryType)
     case raw
 }
 
-public enum OSFILEDirectoryType {
+public enum IONFILEDirectoryType {
     case cache
     case document
     case library

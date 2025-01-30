@@ -7,18 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		751328D52D3175170031BDD0 /* OSFILEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751328D42D3175170031BDD0 /* OSFILEManager.swift */; };
-		751328DA2D318DBA0031BDD0 /* OSFILEDirectoryManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751328D92D318DBA0031BDD0 /* OSFILEDirectoryManagerTests.swift */; };
+		751328D52D3175170031BDD0 /* IONFILEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751328D42D3175170031BDD0 /* IONFILEManager.swift */; };
+		751328DA2D318DBA0031BDD0 /* IONFILEDirectoryManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751328D92D318DBA0031BDD0 /* IONFILEDirectoryManagerTests.swift */; };
 		751328DB2D318E770031BDD0 /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751328D82D3179430031BDD0 /* MockFileManager.swift */; };
-		7575CF6A2BFCEE6F008F3FD0 /* OSFilesystemLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7575CF612BFCEE6F008F3FD0 /* OSFilesystemLib.framework */; };
-		75DA44542D48E435006DF7DE /* OSFILEChunkPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DA44532D48E435006DF7DE /* OSFILEChunkPublisher.swift */; };
+		7575CF6A2BFCEE6F008F3FD0 /* IONFilesystemLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7575CF612BFCEE6F008F3FD0 /* IONFilesystemLib.framework */; };
+		75DA44542D48E435006DF7DE /* IONFILEChunkPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DA44532D48E435006DF7DE /* IONFILEChunkPublisher.swift */; };
 		75DA445A2D490051006DF7DE /* file_emojiContent.txt in Resources */ = {isa = PBXBuildFile; fileRef = 75DA44592D490051006DF7DE /* file_emojiContent.txt */; };
-		75F8380B2D37E42000FCE044 /* OSFILEItemAttributeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F8380A2D37E42000FCE044 /* OSFILEItemAttributeModel.swift */; };
-		75F84D662D39360E00892C89 /* OSFILEManager+Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F84D652D39360E00892C89 /* OSFILEManager+Errors.swift */; };
-		75F84D682D39362F00892C89 /* OSFILEManager+Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F84D672D39362F00892C89 /* OSFILEManager+Enums.swift */; };
-		75FEB2B02D3546D7007C2686 /* OSFILEManager+Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FEB2AF2D3546D7007C2686 /* OSFILEManager+Protocols.swift */; };
+		75F8380B2D37E42000FCE044 /* IONFILEItemAttributeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F8380A2D37E42000FCE044 /* IONFILEItemAttributeModel.swift */; };
+		75F84D662D39360E00892C89 /* IONFILEManager+Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F84D652D39360E00892C89 /* IONFILEManager+Errors.swift */; };
+		75F84D682D39362F00892C89 /* IONFILEManager+Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F84D672D39362F00892C89 /* IONFILEManager+Enums.swift */; };
+		75FEB2B02D3546D7007C2686 /* IONFILEManager+Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FEB2AF2D3546D7007C2686 /* IONFILEManager+Protocols.swift */; };
 		75FEB2B22D35470C007C2686 /* URL+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FEB2B12D35470C007C2686 /* URL+Extension.swift */; };
-		75FEB2B42D35479B007C2686 /* OSFILEFileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FEB2B32D35479B007C2686 /* OSFILEFileManagerTests.swift */; };
+		75FEB2B42D35479B007C2686 /* IONFILEFileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FEB2B32D35479B007C2686 /* IONFILEFileManagerTests.swift */; };
 		75FEB2B72D355F21007C2686 /* file.txt in Resources */ = {isa = PBXBuildFile; fileRef = 75FEB2B62D355F21007C2686 /* file.txt */; };
 /* End PBXBuildFile section */
 
@@ -33,19 +33,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		751328D42D3175170031BDD0 /* OSFILEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSFILEManager.swift; sourceTree = "<group>"; };
+		751328D42D3175170031BDD0 /* IONFILEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONFILEManager.swift; sourceTree = "<group>"; };
 		751328D82D3179430031BDD0 /* MockFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
-		751328D92D318DBA0031BDD0 /* OSFILEDirectoryManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSFILEDirectoryManagerTests.swift; sourceTree = "<group>"; };
-		7575CF612BFCEE6F008F3FD0 /* OSFilesystemLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OSFilesystemLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7575CF692BFCEE6F008F3FD0 /* OSFilesystemLibTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSFilesystemLibTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		75DA44532D48E435006DF7DE /* OSFILEChunkPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSFILEChunkPublisher.swift; sourceTree = "<group>"; };
+		751328D92D318DBA0031BDD0 /* IONFILEDirectoryManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONFILEDirectoryManagerTests.swift; sourceTree = "<group>"; };
+		7575CF612BFCEE6F008F3FD0 /* IONFilesystemLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IONFilesystemLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7575CF692BFCEE6F008F3FD0 /* IONFilesystemLibTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IONFilesystemLibTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		75DA44532D48E435006DF7DE /* IONFILEChunkPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONFILEChunkPublisher.swift; sourceTree = "<group>"; };
 		75DA44592D490051006DF7DE /* file_emojiContent.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = file_emojiContent.txt; sourceTree = "<group>"; };
-		75F8380A2D37E42000FCE044 /* OSFILEItemAttributeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSFILEItemAttributeModel.swift; sourceTree = "<group>"; };
-		75F84D652D39360E00892C89 /* OSFILEManager+Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSFILEManager+Errors.swift"; sourceTree = "<group>"; };
-		75F84D672D39362F00892C89 /* OSFILEManager+Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSFILEManager+Enums.swift"; sourceTree = "<group>"; };
-		75FEB2AF2D3546D7007C2686 /* OSFILEManager+Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSFILEManager+Protocols.swift"; sourceTree = "<group>"; };
+		75F8380A2D37E42000FCE044 /* IONFILEItemAttributeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONFILEItemAttributeModel.swift; sourceTree = "<group>"; };
+		75F84D652D39360E00892C89 /* IONFILEManager+Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IONFILEManager+Errors.swift"; sourceTree = "<group>"; };
+		75F84D672D39362F00892C89 /* IONFILEManager+Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IONFILEManager+Enums.swift"; sourceTree = "<group>"; };
+		75FEB2AF2D3546D7007C2686 /* IONFILEManager+Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IONFILEManager+Protocols.swift"; sourceTree = "<group>"; };
 		75FEB2B12D35470C007C2686 /* URL+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Extension.swift"; sourceTree = "<group>"; };
-		75FEB2B32D35479B007C2686 /* OSFILEFileManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSFILEFileManagerTests.swift; sourceTree = "<group>"; };
+		75FEB2B32D35479B007C2686 /* IONFILEFileManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONFILEFileManagerTests.swift; sourceTree = "<group>"; };
 		75FEB2B62D355F21007C2686 /* file.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = file.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7575CF6A2BFCEE6F008F3FD0 /* OSFilesystemLib.framework in Frameworks */,
+				7575CF6A2BFCEE6F008F3FD0 /* IONFilesystemLib.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,8 +71,8 @@
 		7575CF572BFCEE6F008F3FD0 = {
 			isa = PBXGroup;
 			children = (
-				7575CF632BFCEE6F008F3FD0 /* OSFilesystemLib */,
-				7575CF6D2BFCEE6F008F3FD0 /* OSFilesystemLibTests */,
+				7575CF632BFCEE6F008F3FD0 /* IONFilesystemLib */,
+				7575CF6D2BFCEE6F008F3FD0 /* IONFilesystemLibTests */,
 				7575CF622BFCEE6F008F3FD0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -80,36 +80,36 @@
 		7575CF622BFCEE6F008F3FD0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7575CF612BFCEE6F008F3FD0 /* OSFilesystemLib.framework */,
-				7575CF692BFCEE6F008F3FD0 /* OSFilesystemLibTests.xctest */,
+				7575CF612BFCEE6F008F3FD0 /* IONFilesystemLib.framework */,
+				7575CF692BFCEE6F008F3FD0 /* IONFilesystemLibTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		7575CF632BFCEE6F008F3FD0 /* OSFilesystemLib */ = {
+		7575CF632BFCEE6F008F3FD0 /* IONFilesystemLib */ = {
 			isa = PBXGroup;
 			children = (
-				751328D42D3175170031BDD0 /* OSFILEManager.swift */,
-				75F84D672D39362F00892C89 /* OSFILEManager+Enums.swift */,
-				75F84D652D39360E00892C89 /* OSFILEManager+Errors.swift */,
-				75FEB2AF2D3546D7007C2686 /* OSFILEManager+Protocols.swift */,
-				75DA44532D48E435006DF7DE /* OSFILEChunkPublisher.swift */,
-				75F8380A2D37E42000FCE044 /* OSFILEItemAttributeModel.swift */,
+				751328D42D3175170031BDD0 /* IONFILEManager.swift */,
+				75F84D672D39362F00892C89 /* IONFILEManager+Enums.swift */,
+				75F84D652D39360E00892C89 /* IONFILEManager+Errors.swift */,
+				75FEB2AF2D3546D7007C2686 /* IONFILEManager+Protocols.swift */,
+				75DA44532D48E435006DF7DE /* IONFILEChunkPublisher.swift */,
+				75F8380A2D37E42000FCE044 /* IONFILEItemAttributeModel.swift */,
 				75FEB2B12D35470C007C2686 /* URL+Extension.swift */,
 			);
-			path = OSFilesystemLib;
+			path = IONFilesystemLib;
 			sourceTree = "<group>";
 		};
-		7575CF6D2BFCEE6F008F3FD0 /* OSFilesystemLibTests */ = {
+		7575CF6D2BFCEE6F008F3FD0 /* IONFilesystemLibTests */ = {
 			isa = PBXGroup;
 			children = (
-				75DA44592D490051006DF7DE /* file_emojiContent.txt */,
 				751328D82D3179430031BDD0 /* MockFileManager.swift */,
-				751328D92D318DBA0031BDD0 /* OSFILEDirectoryManagerTests.swift */,
-				75FEB2B32D35479B007C2686 /* OSFILEFileManagerTests.swift */,
+				751328D92D318DBA0031BDD0 /* IONFILEDirectoryManagerTests.swift */,
+				75FEB2B32D35479B007C2686 /* IONFILEFileManagerTests.swift */,
 				75FEB2B62D355F21007C2686 /* file.txt */,
+				75DA44592D490051006DF7DE /* file_emojiContent.txt */,
 			);
-			path = OSFilesystemLibTests;
+			path = IONFilesystemLibTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,9 +125,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		7575CF602BFCEE6F008F3FD0 /* OSFilesystemLib */ = {
+		7575CF602BFCEE6F008F3FD0 /* IONFilesystemLib */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7575CF732BFCEE6F008F3FD0 /* Build configuration list for PBXNativeTarget "OSFilesystemLib" */;
+			buildConfigurationList = 7575CF732BFCEE6F008F3FD0 /* Build configuration list for PBXNativeTarget "IONFilesystemLib" */;
 			buildPhases = (
 				7575CF5C2BFCEE6F008F3FD0 /* Headers */,
 				7575CF5D2BFCEE6F008F3FD0 /* Sources */,
@@ -139,14 +139,14 @@
 			);
 			dependencies = (
 			);
-			name = OSFilesystemLib;
+			name = IONFilesystemLib;
 			productName = OSInAppBrowserLib;
-			productReference = 7575CF612BFCEE6F008F3FD0 /* OSFilesystemLib.framework */;
+			productReference = 7575CF612BFCEE6F008F3FD0 /* IONFilesystemLib.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		7575CF682BFCEE6F008F3FD0 /* OSFilesystemLibTests */ = {
+		7575CF682BFCEE6F008F3FD0 /* IONFilesystemLibTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7575CF762BFCEE6F008F3FD0 /* Build configuration list for PBXNativeTarget "OSFilesystemLibTests" */;
+			buildConfigurationList = 7575CF762BFCEE6F008F3FD0 /* Build configuration list for PBXNativeTarget "IONFilesystemLibTests" */;
 			buildPhases = (
 				7575CF652BFCEE6F008F3FD0 /* Sources */,
 				7575CF662BFCEE6F008F3FD0 /* Frameworks */,
@@ -157,9 +157,9 @@
 			dependencies = (
 				7575CF6C2BFCEE6F008F3FD0 /* PBXTargetDependency */,
 			);
-			name = OSFilesystemLibTests;
+			name = IONFilesystemLibTests;
 			productName = OSInAppBrowserLibTests;
-			productReference = 7575CF692BFCEE6F008F3FD0 /* OSFilesystemLibTests.xctest */;
+			productReference = 7575CF692BFCEE6F008F3FD0 /* IONFilesystemLibTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -182,7 +182,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 7575CF5B2BFCEE6F008F3FD0 /* Build configuration list for PBXProject "OSFilesystemLib" */;
+			buildConfigurationList = 7575CF5B2BFCEE6F008F3FD0 /* Build configuration list for PBXProject "IONFilesystemLib" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -198,8 +198,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7575CF602BFCEE6F008F3FD0 /* OSFilesystemLib */,
-				7575CF682BFCEE6F008F3FD0 /* OSFilesystemLibTests */,
+				7575CF602BFCEE6F008F3FD0 /* IONFilesystemLib */,
+				7575CF682BFCEE6F008F3FD0 /* IONFilesystemLibTests */,
 			);
 		};
 /* End PBXProject section */
@@ -249,12 +249,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				75F8380B2D37E42000FCE044 /* OSFILEItemAttributeModel.swift in Sources */,
-				75DA44542D48E435006DF7DE /* OSFILEChunkPublisher.swift in Sources */,
-				75FEB2B02D3546D7007C2686 /* OSFILEManager+Protocols.swift in Sources */,
-				75F84D682D39362F00892C89 /* OSFILEManager+Enums.swift in Sources */,
-				751328D52D3175170031BDD0 /* OSFILEManager.swift in Sources */,
-				75F84D662D39360E00892C89 /* OSFILEManager+Errors.swift in Sources */,
+				75F8380B2D37E42000FCE044 /* IONFILEItemAttributeModel.swift in Sources */,
+				75DA44542D48E435006DF7DE /* IONFILEChunkPublisher.swift in Sources */,
+				75FEB2B02D3546D7007C2686 /* IONFILEManager+Protocols.swift in Sources */,
+				75F84D682D39362F00892C89 /* IONFILEManager+Enums.swift in Sources */,
+				751328D52D3175170031BDD0 /* IONFILEManager.swift in Sources */,
+				75F84D662D39360E00892C89 /* IONFILEManager+Errors.swift in Sources */,
 				75FEB2B22D35470C007C2686 /* URL+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,9 +263,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				751328DA2D318DBA0031BDD0 /* OSFILEDirectoryManagerTests.swift in Sources */,
+				751328DA2D318DBA0031BDD0 /* IONFILEDirectoryManagerTests.swift in Sources */,
 				751328DB2D318E770031BDD0 /* MockFileManager.swift in Sources */,
-				75FEB2B42D35479B007C2686 /* OSFILEFileManagerTests.swift in Sources */,
+				75FEB2B42D35479B007C2686 /* IONFILEFileManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,7 +274,7 @@
 /* Begin PBXTargetDependency section */
 		7575CF6C2BFCEE6F008F3FD0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7575CF602BFCEE6F008F3FD0 /* OSFilesystemLib */;
+			target = 7575CF602BFCEE6F008F3FD0 /* IONFilesystemLib */;
 			targetProxy = 7575CF6B2BFCEE6F008F3FD0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -434,7 +434,7 @@
 				MARKETING_VERSION = 1.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = com.outsystems.rd.inappbrowser.OSInAppBrowserLib;
+				PRODUCT_BUNDLE_IDENTIFIER = io.ionic.libs.filesystem.FilesystemLib;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -469,7 +469,7 @@
 				MARKETING_VERSION = 1.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = com.outsystems.rd.inappbrowser.OSInAppBrowserLib;
+				PRODUCT_BUNDLE_IDENTIFIER = io.ionic.libs.filesystem.FilesystemLib;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -487,7 +487,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.outsystems.rd.inappbrowser.OSInAppBrowserLibTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.ionic.libs.filesystem.FilesystemLibTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -508,7 +508,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.outsystems.rd.inappbrowser.OSInAppBrowserLibTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.ionic.libs.filesystem.FilesystemLibTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -522,7 +522,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7575CF5B2BFCEE6F008F3FD0 /* Build configuration list for PBXProject "OSFilesystemLib" */ = {
+		7575CF5B2BFCEE6F008F3FD0 /* Build configuration list for PBXProject "IONFilesystemLib" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7575CF712BFCEE6F008F3FD0 /* Debug */,
@@ -531,7 +531,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7575CF732BFCEE6F008F3FD0 /* Build configuration list for PBXNativeTarget "OSFilesystemLib" */ = {
+		7575CF732BFCEE6F008F3FD0 /* Build configuration list for PBXNativeTarget "IONFilesystemLib" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7575CF742BFCEE6F008F3FD0 /* Debug */,
@@ -540,7 +540,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7575CF762BFCEE6F008F3FD0 /* Build configuration list for PBXNativeTarget "OSFilesystemLibTests" */ = {
+		7575CF762BFCEE6F008F3FD0 /* Build configuration list for PBXNativeTarget "IONFilesystemLibTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7575CF772BFCEE6F008F3FD0 /* Debug */,

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct OSFILEManager {
+public struct IONFILEManager {
     private let fileManager: FileManager
 
     public init(fileManager: FileManager = .default) {
@@ -8,7 +8,7 @@ public struct OSFILEManager {
     }
 }
 
-extension OSFILEManager: OSFILEDirectoryManager {
+extension IONFILEManager: IONFILEDirectoryManager {
     public func createDirectory(atURL pathURL: URL, includeIntermediateDirectories: Bool) throws {
         try fileManager.createDirectory(at: pathURL, withIntermediateDirectories: includeIntermediateDirectories)
     }
@@ -17,7 +17,7 @@ extension OSFILEManager: OSFILEDirectoryManager {
         if !includeIntermediateDirectories {
             let directoryContents = try listDirectory(atURL: pathURL)
             if !directoryContents.isEmpty {
-                throw OSFILEDirectoryManagerError.notEmpty
+                throw IONFILEDirectoryManagerError.notEmpty
             }
         }
 
@@ -29,8 +29,8 @@ extension OSFILEManager: OSFILEDirectoryManager {
     }
 }
 
-extension OSFILEManager: OSFILEFileManager {
-    public func readEntireFile(atURL fileURL: URL, withEncoding encoding: OSFILEEncoding) throws -> String {
+extension IONFILEManager: IONFILEFileManager {
+    public func readEntireFile(atURL fileURL: URL, withEncoding encoding: IONFILEEncoding) throws -> String {
         try withSecurityScopedAccess(to: fileURL) {
             switch encoding {
             case .byteBuffer:
@@ -41,13 +41,13 @@ extension OSFILEManager: OSFILEFileManager {
         }
     }
 
-    public func readFileInChunks(atURL fileURL: URL, withEncoding encoding: OSFILEEncoding, andChunkSize chunkSize: Int) throws -> OSFILEChunkPublisher {
+    public func readFileInChunks(atURL fileURL: URL, withEncoding encoding: IONFILEEncoding, andChunkSize chunkSize: Int) throws -> IONFILEChunkPublisher {
         try withSecurityScopedAccess(to: fileURL) {
             .init(fileURL, chunkSize, encoding)
         }
     }
 
-    public func getFileURL(atPath path: String, withSearchPath searchPath: OSFILESearchPath) throws -> URL {
+    public func getFileURL(atPath path: String, withSearchPath searchPath: IONFILESearchPath) throws -> URL {
         switch searchPath {
         case .directory(let type):
             try resolveDirectoryURL(forType: type, with: path)
@@ -58,21 +58,21 @@ extension OSFILEManager: OSFILEFileManager {
 
     public func deleteFile(atURL url: URL) throws {
         guard fileManager.fileExists(atPath: url.urlPath) else {
-            throw OSFILEFileManagerError.fileNotFound
+            throw IONFILEFileManagerError.fileNotFound
         }
 
         try fileManager.removeItem(at: url)
     }
 
     @discardableResult
-    public func saveFile(atURL fileURL: URL, withEncodingAndData encodingMapper: OSFILEEncodingValueMapper, includeIntermediateDirectories: Bool) throws -> URL {
+    public func saveFile(atURL fileURL: URL, withEncodingAndData encodingMapper: IONFILEEncodingValueMapper, includeIntermediateDirectories: Bool) throws -> URL {
         let fileDirectoryURL = fileURL.deletingLastPathComponent()
 
         if !fileManager.fileExists(atPath: fileDirectoryURL.urlPath) {
             if includeIntermediateDirectories {
                 try createDirectory(atURL: fileDirectoryURL, includeIntermediateDirectories: true)
             } else {
-                throw OSFILEFileManagerError.missingParentFolder
+                throw IONFILEFileManagerError.missingParentFolder
             }
         }
 
@@ -86,7 +86,7 @@ extension OSFILEManager: OSFILEFileManager {
         return fileURL
     }
 
-    public func appendData(_ encodingMapper: OSFILEEncodingValueMapper, atURL url: URL, includeIntermediateDirectories: Bool) throws {
+    public func appendData(_ encodingMapper: IONFILEEncodingValueMapper, atURL url: URL, includeIntermediateDirectories: Bool) throws {
         guard fileManager.fileExists(atPath: url.urlPath) else {
             try saveFile(atURL: url, withEncodingAndData: encodingMapper, includeIntermediateDirectories: includeIntermediateDirectories)
             return
@@ -98,7 +98,7 @@ extension OSFILEManager: OSFILEFileManager {
             dataToAppend = value
         case .string(let encoding, let value):
             guard let valueData = value.data(using: encoding.stringEncoding) else {
-                throw OSFILEFileManagerError.cantDecodeData
+                throw IONFILEFileManagerError.cantDecodeData
             }
             dataToAppend = valueData
         }
@@ -109,7 +109,7 @@ extension OSFILEManager: OSFILEFileManager {
         try fileHandle.close()
     }
 
-    public func getItemAttributes(atPath path: String) throws -> OSFILEItemAttributeModel {
+    public func getItemAttributes(atPath path: String) throws -> IONFILEItemAttributeModel {
         let attributesDictionary = try fileManager.attributesOfItem(atPath: path)
         return .create(from: attributesDictionary)
     }
@@ -127,7 +127,7 @@ extension OSFILEManager: OSFILEFileManager {
     }
 }
 
-private extension OSFILEManager {
+private extension IONFILEManager {
     func withSecurityScopedAccess<T>(to fileURL: URL, perform operation: () throws -> T) throws -> T {
         // Check if the URL requires security-scoped access
         let requiresSecurityScope = fileURL.startAccessingSecurityScopedResource()
@@ -151,9 +151,9 @@ private extension OSFILEManager {
         try String(contentsOf: fileURL, encoding: stringEncoding)
     }
 
-    func resolveDirectoryURL(forType directoryType: OSFILEDirectoryType, with path: String) throws -> URL {
+    func resolveDirectoryURL(forType directoryType: IONFILEDirectoryType, with path: String) throws -> URL {
         guard let directoryURL = directoryType.fetchURL(using: fileManager) else {
-            throw OSFILEFileManagerError.directoryNotFound
+            throw IONFILEFileManagerError.directoryNotFound
         }
 
         return path.isEmpty ? directoryURL : directoryURL.urlWithAppendingPath(path)
@@ -161,7 +161,7 @@ private extension OSFILEManager {
 
     func resolveRawURL(from path: String) throws -> URL {
         guard let rawURL = URL(string: path) else {
-            throw OSFILEFileManagerError.cantCreateURL
+            throw IONFILEFileManagerError.cantCreateURL
         }
         return rawURL
     }
@@ -182,7 +182,7 @@ private extension OSFILEManager {
     }
 }
 
-private extension OSFILEDirectoryType {
+private extension IONFILEDirectoryType {
     struct Keys {
         static let noCloudPath = "NoCloud"
     }

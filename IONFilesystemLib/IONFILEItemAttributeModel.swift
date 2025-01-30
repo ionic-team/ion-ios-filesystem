@@ -1,23 +1,23 @@
 import Foundation
 
-public enum OSFILEItemType: Encodable {
+public enum IONFILEItemType: Encodable {
     case directory
     case file
 
-    static func create(from fileAttributeType: String?) -> OSFILEItemType {
+    static func create(from fileAttributeType: String?) -> Self {
         fileAttributeType == FileAttributeKey.FileTypeDirectoryValue ? .directory : .file
     }
 }
 
-public struct OSFILEItemAttributeModel {
+public struct IONFILEItemAttributeModel {
     private(set) public var creationDateTimestamp: Double
     private(set) public var modificationDateTimestamp: Double
     private(set) public var size: UInt64
-    private(set) public var type: OSFILEItemType
+    private(set) public var type: IONFILEItemType
 }
 
-public extension OSFILEItemAttributeModel {
-    static func create(from attributeDictionary: [FileAttributeKey: Any]) -> OSFILEItemAttributeModel {
+public extension IONFILEItemAttributeModel {
+    static func create(from attributeDictionary: [FileAttributeKey: Any]) -> IONFILEItemAttributeModel {
         let creationDate = attributeDictionary[.creationDate] as? Date
         let modificationDate = attributeDictionary[.modificationDate] as? Date
         let size = attributeDictionary[.size] as? UInt64 ?? 0

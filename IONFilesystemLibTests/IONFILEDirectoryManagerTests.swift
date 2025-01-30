@@ -1,9 +1,9 @@
 import XCTest
 
-@testable import OSFilesystemLib
+@testable import IONFilesystemLib
 
-final class OSFILEDirectoryManagerTests: XCTestCase {
-    private var sut: OSFILEManager!
+final class IONFILEDirectoryManagerTests: XCTestCase {
+    private var sut: IONFILEManager!
 
     // MARK: - 'createDirectory' tests
     func test_createDirectory_shouldBeSuccessful() throws {
@@ -88,7 +88,7 @@ final class OSFILEDirectoryManagerTests: XCTestCase {
             try sut.removeDirectory(atURL: testDirectory, includeIntermediateDirectories: shouldIncludeIntermediateDirectories)
         ) {
             // Then
-            XCTAssertEqual($0 as? OSFILEDirectoryManagerError, .notEmpty)
+            XCTAssertEqual($0 as? IONFILEDirectoryManagerError, .notEmpty)
         }
     }
 
@@ -136,10 +136,10 @@ final class OSFILEDirectoryManagerTests: XCTestCase {
     }
 }
 
-private extension OSFILEDirectoryManagerTests {
+private extension IONFILEDirectoryManagerTests {
     @discardableResult func createFileManager(with error: MockFileManagerError? = nil, shouldDirectoryHaveContent: Bool = false) -> MockFileManager {
         let fileManager = MockFileManager(error: error, shouldDirectoryHaveContent: shouldDirectoryHaveContent)
-        sut = OSFILEManager(fileManager: fileManager)
+        sut = IONFILEManager(fileManager: fileManager)
 
         return fileManager
     }

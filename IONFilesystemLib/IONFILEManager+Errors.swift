@@ -1,8 +1,8 @@
-enum OSFILEDirectoryManagerError: Error {
+enum IONFILEDirectoryManagerError: Error {
     case notEmpty
 }
 
-enum OSFILEFileManagerError: Error {
+enum IONFILEFileManagerError: Error {
     case cantCreateURL
     case cantDecodeData
     case directoryNotFound
@@ -10,7 +10,7 @@ enum OSFILEFileManagerError: Error {
     case missingParentFolder
 }
 
-enum OSFILEChunkPublisherError: Error {
+enum IONFILEChunkPublisherError: Error {
     case cantEncodeData
     case notAbleToReadFile
 }

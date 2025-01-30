@@ -1,6 +1,6 @@
 BUILD_FOLDER="build"
-BUILD_SCHEME="OSFilesystemLib"
-FRAMEWORK_NAME="OSFilesystemLib"
+BUILD_SCHEME="IONFilesystemLib"
+FRAMEWORK_NAME="IONFilesystemLib"
 SIMULATOR_ARCHIVE_PATH="${BUILD_FOLDER}/iphonesimulator.xcarchive"
 IOS_DEVICE_ARCHIVE_PATH="${BUILD_FOLDER}/iphoneos.xcarchive"
 

@@ -1,0 +1,19 @@
+import Foundation
+
+public protocol IONFILEDirectoryManager {
+    func createDirectory(atURL: URL, includeIntermediateDirectories: Bool) throws
+    func removeDirectory(atURL: URL, includeIntermediateDirectories: Bool) throws
+    func listDirectory(atURL: URL) throws -> [URL]
+}
+
+public protocol IONFILEFileManager {
+    func readEntireFile(atURL: URL, withEncoding: IONFILEEncoding) throws -> String
+    func readFileInChunks(atURL: URL, withEncoding: IONFILEEncoding, andChunkSize: Int) throws -> IONFILEChunkPublisher
+    func getFileURL(atPath: String, withSearchPath: IONFILESearchPath) throws -> URL
+    func deleteFile(atURL: URL) throws
+    func saveFile(atURL: URL, withEncodingAndData: IONFILEEncodingValueMapper, includeIntermediateDirectories: Bool) throws -> URL
+    func appendData(_ data: IONFILEEncodingValueMapper, atURL: URL, includeIntermediateDirectories: Bool) throws
+    func getItemAttributes(atPath: String) throws -> IONFILEItemAttributeModel
+    func renameItem(fromURL: URL, toURL: URL) throws
+    func copyItem(fromURL: URL, toURL: URL) throws
+}

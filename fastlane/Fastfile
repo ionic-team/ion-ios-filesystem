@@ -18,14 +18,14 @@ default_platform(:ios)
 platform :ios do
   desc "Lane to run the unit tests"
   lane :unit_tests do
-    run_tests(scheme: "OSFilesystemLib")
+    run_tests(scheme: "IONFilesystemLib")
   end
 
   desc "Code coverage"
   lane :coverage do
     slather(
-      scheme: "OSFilesystemLib",
-      proj: "OSFilesystemLib.xcodeproj",
+      scheme: "IONFilesystemLib",
+      proj: "IONFilesystemLib.xcodeproj",
       output_directory: "sonar-reports", 
       sonarqube_xml: "true"
     )
@@ -33,7 +33,7 @@ platform :ios do
 
   lane :lint do
     swiftlint(
-      output_file: "sonar-reports/OSFilesystemLib-swiftlint.txt",
+      output_file: "sonar-reports/IONFilesystemLib-swiftlint.txt",
       ignore_exit_status: true
     )
   end
