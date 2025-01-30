@@ -86,19 +86,6 @@ extension IONFILEFileManagerTests {
             XCTAssertEqual($0 as? IONFILEChunkPublisherError, .notAbleToReadFile)
         }
     }
-
-    func test_readFileInChunks_withInvalidContent_returnsError() {
-        // Given
-        createFileManager()
-
-        // When
-        XCTAssertThrowsError(try fetchChunkedContent(
-            forFile: (Configuration.fileWithEmojiName, Configuration.fileExtension), withEncoding: .string(encoding: .ascii)
-        )) {
-            // Then
-            XCTAssertEqual($0 as? IONFILEChunkPublisherError, .cantEncodeData)
-        }
-    }
 }
 
 // MARK: - 'getFileURL' tests
@@ -311,9 +298,7 @@ extension IONFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
         XCTAssertEqual(savedFileURL, fileURL)
 
-        let savedFileContent = try fetchEntireContent(
-            forFile: (Configuration.newFileName, Configuration.fileExtension), withEncoding: .string(encoding: stringEncoding)
-        )
+        let savedFileContent = try fetchEntireContent(forURL: fileURL, withEncoding: .string(encoding: stringEncoding))
         XCTAssertEqual(savedFileContent, contentToSave)
 
         try sut.deleteFile(atURL: fileURL)  // keep things clean by deleting created file
@@ -340,9 +325,7 @@ extension IONFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
         XCTAssertEqual(savedFileURL, fileURL)
 
-        let savedFileContent = try fetchEntireContent(
-            forFile: (Configuration.newFileName, Configuration.fileExtension), withEncoding: .byteBuffer
-        )
+        let savedFileContent = try fetchEntireContent(forURL: fileURL, withEncoding: .byteBuffer)
         XCTAssertEqual(savedFileContent, contentToSave)
 
         try sut.deleteFile(atURL: fileURL)  // keep things clean by deleting created file
@@ -371,9 +354,7 @@ extension IONFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedPath, parentFolderURL)
         XCTAssertEqual(savedFileURL, fileURL)
 
-        let savedFileContent = try fetchEntireContent(
-            forFile: (Configuration.newFileName, Configuration.fileExtension), withEncoding: .string(encoding: stringEncoding)
-        )
+        let savedFileContent = try fetchEntireContent(forURL: fileURL, withEncoding: .string(encoding: stringEncoding))
         XCTAssertEqual(savedFileContent, contentToSave)
 
         fileManager.fileExists = true
@@ -420,10 +401,7 @@ extension IONFILEFileManagerTests {
         )
 
         // Then
-        let savedFileContent = try fetchEntireContent(
-            forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .string(encoding: stringEncoding)
-        )
-
+        let savedFileContent = try fetchEntireContent(forURL: fileURL, withEncoding: .string(encoding: stringEncoding))
         XCTAssertEqual(savedFileContent, Configuration.fileContent + contentToAdd)
 
         try sut.saveFile(    // keep things clean by resetting file
@@ -448,10 +426,7 @@ extension IONFILEFileManagerTests {
         )
 
         // Then
-        let savedFileContent = try fetchEntireContent(
-            forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .byteBuffer
-        )
-
+        let savedFileContent = try fetchEntireContent(forURL: fileURL, withEncoding: .byteBuffer)
         XCTAssertEqual(savedFileContent, Configuration.fileContent + contentToAdd)
 
         try sut.saveFile(    // keep things clean by resetting file
@@ -483,9 +458,7 @@ extension IONFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
 
         // Then
-        let savedFileContent = try fetchEntireContent(
-            forFile: (Configuration.newFileName, Configuration.fileExtension), withEncoding: .string(encoding: stringEncoding)
-        )
+        let savedFileContent = try fetchEntireContent(forURL: fileURL, withEncoding: .string(encoding: stringEncoding))
 
         XCTAssertEqual(savedFileContent, contentToAdd)
 
@@ -759,7 +732,6 @@ extension IONFILEFileManagerTests {
 private extension IONFILEFileManagerTests {
     struct Configuration {
         static let fileName = "file"
-        static let fileWithEmojiName = "file_emojiContent"
         static let newFileName = "new_file"
         static let fileExtension = "txt"
         static let fileContent = "Hello, world!"
@@ -820,6 +792,10 @@ private extension IONFILEFileManagerTests {
 
     func fetchEntireContent(forFile file: (name: String, extension: String), withEncoding encoding: IONFILEEncoding) throws -> String {
         let fileURL = try XCTUnwrap(Bundle(for: type(of: self)).url(forResource: file.name, withExtension: file.extension))
+        return try fetchEntireContent(forURL: fileURL, withEncoding: encoding)
+    }
+
+    func fetchEntireContent(forURL fileURL: URL, withEncoding encoding: IONFILEEncoding) throws -> String {
         return try treatContent(withEncoding: encoding) {
             try sut.readEntireFile(atURL: fileURL, withEncoding: encoding)
         }

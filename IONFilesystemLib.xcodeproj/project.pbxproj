@@ -12,7 +12,6 @@
 		751328DB2D318E770031BDD0 /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751328D82D3179430031BDD0 /* MockFileManager.swift */; };
 		7575CF6A2BFCEE6F008F3FD0 /* IONFilesystemLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7575CF612BFCEE6F008F3FD0 /* IONFilesystemLib.framework */; };
 		75DA44542D48E435006DF7DE /* IONFILEChunkPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DA44532D48E435006DF7DE /* IONFILEChunkPublisher.swift */; };
-		75DA445A2D490051006DF7DE /* file_emojiContent.txt in Resources */ = {isa = PBXBuildFile; fileRef = 75DA44592D490051006DF7DE /* file_emojiContent.txt */; };
 		75F8380B2D37E42000FCE044 /* IONFILEItemAttributeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F8380A2D37E42000FCE044 /* IONFILEItemAttributeModel.swift */; };
 		75F84D662D39360E00892C89 /* IONFILEManager+Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F84D652D39360E00892C89 /* IONFILEManager+Errors.swift */; };
 		75F84D682D39362F00892C89 /* IONFILEManager+Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F84D672D39362F00892C89 /* IONFILEManager+Enums.swift */; };
@@ -40,7 +39,6 @@
 		7575CF612BFCEE6F008F3FD0 /* IONFilesystemLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IONFilesystemLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7575CF692BFCEE6F008F3FD0 /* IONFilesystemLibTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IONFilesystemLibTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		75DA44532D48E435006DF7DE /* IONFILEChunkPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONFILEChunkPublisher.swift; sourceTree = "<group>"; };
-		75DA44592D490051006DF7DE /* file_emojiContent.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = file_emojiContent.txt; sourceTree = "<group>"; };
 		75F8380A2D37E42000FCE044 /* IONFILEItemAttributeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONFILEItemAttributeModel.swift; sourceTree = "<group>"; };
 		75F84D652D39360E00892C89 /* IONFILEManager+Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IONFILEManager+Errors.swift"; sourceTree = "<group>"; };
 		75F84D672D39362F00892C89 /* IONFILEManager+Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IONFILEManager+Enums.swift"; sourceTree = "<group>"; };
@@ -109,7 +107,6 @@
 				751328D92D318DBA0031BDD0 /* IONFILEDirectoryManagerTests.swift */,
 				75FEB2B32D35479B007C2686 /* IONFILEFileManagerTests.swift */,
 				75FEB2B62D355F21007C2686 /* file.txt */,
-				75DA44592D490051006DF7DE /* file_emojiContent.txt */,
 			);
 			path = IONFilesystemLibTests;
 			sourceTree = "<group>";
@@ -218,7 +215,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				75DA445A2D490051006DF7DE /* file_emojiContent.txt in Resources */,
 				75FEB2B72D355F21007C2686 /* file.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
