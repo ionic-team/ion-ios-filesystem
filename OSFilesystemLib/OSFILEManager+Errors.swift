@@ -12,4 +12,5 @@ enum OSFILEFileManagerError: Error {
 
 enum OSFILEChunkPublisherError: Error {
     case cantEncodeData
+    case notAbleToReadFile
 }

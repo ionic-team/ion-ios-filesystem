@@ -74,6 +74,19 @@ extension OSFILEFileManagerTests {
         XCTAssertEqual(fileContent, Configuration.fileContent)
     }
 
+    func test_readFileInChunks_notAbleToReadFile_returnsError() {
+        // Given
+        createFileManager()
+
+        // When
+        XCTAssertThrowsError(try fetchChunkedContent(
+            forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .string(encoding: .utf8), forceURLError: true
+        )) {
+            // Then
+            XCTAssertEqual($0 as? OSFILEChunkPublisherError, .notAbleToReadFile)
+        }
+    }
+
     func test_readFileInChunks_withInvalidContent_returnsError() {
         // Given
         createFileManager()
@@ -812,13 +825,16 @@ private extension OSFILEFileManagerTests {
         }
     }
 
-    func fetchChunkedContent(forFile file: (name: String, extension: String), withEncoding encoding: OSFILEEncoding) throws -> String {
-        let fileURL = try XCTUnwrap(Bundle(for: type(of: self)).url(forResource: file.name, withExtension: file.extension))
+    func fetchChunkedContent(forFile file: (name: String, extension: String), withEncoding encoding: OSFILEEncoding, forceURLError: Bool = false) throws -> String {
+        var fileURL = try XCTUnwrap(Bundle(for: type(of: self)).url(forResource: file.name, withExtension: file.extension))
         return try treatContent(withEncoding: encoding) {
             var result = String()
             var error: Error?
             let expectation = XCTestExpectation(description: "Wait for chunks to be processed")
 
+            if forceURLError {
+                fileURL.deleteLastPathComponent()
+            }
             try sut.readFileInChunks(atURL: fileURL, withEncoding: encoding, andChunkSize: 3)   // 3 bytes
                 .sink(receiveCompletion: { completion in
                     if case .failure(let failure) = completion {

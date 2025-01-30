@@ -36,7 +36,9 @@ private class OSFILEChunkSubscription<S: Subscriber>: Subscription where S.Input
     }
 
     func request(_ demand: Subscribers.Demand) {
-        guard let fileHandle = fileHandle, !isCompleted else { return }
+        guard let fileHandle = fileHandle, !isCompleted else {
+            return subscriber.receive(completion: .failure(OSFILEChunkPublisherError.notAbleToReadFile))
+        }
 
         while demand > .none {
             do {
