@@ -107,7 +107,7 @@ final class IONFILEDirectoryManagerTests: XCTestCase {
     }
 
     // MARK: - 'listDirectory' tests
-    func test_listDirectory_withContent_shouldReturnEmptyArray() throws {
+    func test_listDirectory_withContent_shouldReturnNotEmptyArray() throws {
         // Given
         let fileManager = createFileManager(shouldDirectoryHaveContent: true)
         let testDirectory = URL(filePath: "/test/directory")

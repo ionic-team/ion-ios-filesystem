@@ -1,13 +1,14 @@
 import Foundation
 
 class MockFileManager: FileManager {
-    var error: MockFileManagerError?
-    var shouldDirectoryHaveContent: Bool
-    var urlsWithinDirectory: [URL]
+    private let error: MockFileManagerError?
+    private let shouldDirectoryHaveContent: Bool
+    private let urlsWithinDirectory: [URL]
+    private let fileAttributes: [FileAttributeKey: Any]
+    private let shouldBeDirectory: ObjCBool
+    private let mockTemporaryDirectory: URL?
+
     var fileExists: Bool
-    var fileAttributes: [FileAttributeKey: Any]
-    var shouldBeDirectory: ObjCBool
-    var mockTemporaryDirectory: URL?
 
     private(set) var capturedPath: URL?
     private(set) var capturedOriginPath: URL?

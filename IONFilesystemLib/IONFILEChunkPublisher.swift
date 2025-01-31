@@ -30,7 +30,7 @@ private class IONFILEChunkSubscription<S: Subscriber>: Subscription where S.Inpu
 
     init(_ url: URL, _ chunkSize: Int, _ encoding: IONFILEEncoding, _ subscriber: S) {
         self.fileHandle = try? FileHandle(forReadingFrom: url)
-        self.chunkSize = Self.chunkSizeToUse(basedOn: chunkSize, and: encoding)
+        self.chunkSize = chunkSize
         self.encoding = encoding
         self.subscriber = subscriber
     }
@@ -72,14 +72,8 @@ private class IONFILEChunkSubscription<S: Subscriber>: Subscription where S.Inpu
     deinit {
         fileHandle?.closeFile()
     }
-}
 
-private extension IONFILEChunkSubscription {
-    static func chunkSizeToUse(basedOn chunkSize: Int, and encoding: IONFILEEncoding) -> Int {
-        encoding == .byteBuffer ? chunkSize - chunkSize % 3 + 3 : chunkSize
-    }
-
-    func complete(withValue value: Subscribers.Completion<Error>) {
+    private func complete(withValue value: Subscribers.Completion<Error>) {
         isCompleted = true
         subscriber.receive(completion: value)
     }
