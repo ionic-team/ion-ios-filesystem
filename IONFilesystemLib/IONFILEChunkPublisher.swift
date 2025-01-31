@@ -2,7 +2,7 @@ import Combine
 import Foundation
 
 public class IONFILEChunkPublisher: Publisher {
-    public typealias Output = String
+    public typealias Output = IONFILEEncodingValueMapper
     public typealias Failure = Error
 
     private let url: URL
@@ -21,7 +21,7 @@ public class IONFILEChunkPublisher: Publisher {
     }
 }
 
-private class IONFILEChunkSubscription<S: Subscriber>: Subscription where S.Input == String, S.Failure == Error {
+private class IONFILEChunkSubscription<S: Subscriber>: Subscription where S.Input == IONFILEEncodingValueMapper, S.Failure == Error {
     private let fileHandle: FileHandle?
     private let chunkSize: Int
     private let encoding: IONFILEEncoding
@@ -43,14 +43,14 @@ private class IONFILEChunkSubscription<S: Subscriber>: Subscription where S.Inpu
         while demand > .none {
             do {
                 if let chunk = try fileHandle.read(upToCount: chunkSize), !chunk.isEmpty {
-                    let chunkToEmit: String
+                    let chunkToEmit: IONFILEEncodingValueMapper
                     switch encoding {
-                    case .byteBuffer: chunkToEmit = chunk.base64EncodedString()
+                    case .byteBuffer: chunkToEmit = .byteBuffer(value: chunk)
                     case .string(let encoding):
                         guard let chunkText = String(data: chunk, encoding: encoding.stringEncoding) else {
                             throw IONFILEChunkPublisherError.cantEncodeData
                         }
-                        chunkToEmit = chunkText
+                        chunkToEmit = .string(encoding: encoding, value: chunkText)
                     }
 
                     _ = subscriber.receive(chunkToEmit)

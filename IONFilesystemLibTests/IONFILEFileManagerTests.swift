@@ -797,14 +797,17 @@ private extension IONFILEFileManagerTests {
 
     func fetchEntireContent(forURL fileURL: URL, withEncoding encoding: IONFILEEncoding) throws -> String {
         return try treatContent(withEncoding: encoding) {
-            try sut.readEntireFile(atURL: fileURL, withEncoding: encoding)
+            switch try sut.readEntireFile(atURL: fileURL, withEncoding: encoding) {
+            case .byteBuffer(let fileData): fileData.base64EncodedString()
+            case .string(_, let fileData): fileData
+            }
         }
     }
 
     func fetchChunkedContent(forFile file: (name: String, extension: String), withEncoding encoding: IONFILEEncoding, forceURLError: Bool = false) throws -> String {
         var fileURL = try XCTUnwrap(Bundle(for: type(of: self)).url(forResource: file.name, withExtension: file.extension))
         return try treatContent(withEncoding: encoding) {
-            var result = String()
+            var result = [String]()
             var error: Error?
             let expectation = XCTestExpectation(description: "Wait for chunks to be processed")
 
@@ -817,8 +820,12 @@ private extension IONFILEFileManagerTests {
                         error = failure
                     }
                     expectation.fulfill()
-                }, receiveValue: {
-                    result.append($0)
+                }, receiveValue: { value in
+                    let chunkToAdd = switch value {
+                    case .byteBuffer(let chunkData): chunkData.base64EncodedString()
+                    case .string(_, let chunkData): chunkData
+                    }
+                    result.append(chunkToAdd)
                 })
                 .store(in: &cancellables)
 
@@ -826,7 +833,7 @@ private extension IONFILEFileManagerTests {
             wait(for: [expectation], timeout: 1.0)
 
             if let error { throw error }
-            return result
+            return result.joined()
         }
     }
 

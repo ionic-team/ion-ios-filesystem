@@ -30,14 +30,19 @@ extension IONFILEManager: IONFILEDirectoryManager {
 }
 
 extension IONFILEManager: IONFILEFileManager {
-    public func readEntireFile(atURL fileURL: URL, withEncoding encoding: IONFILEEncoding) throws -> String {
+    public func readEntireFile(atURL fileURL: URL, withEncoding encoding: IONFILEEncoding) throws -> IONFILEEncodingValueMapper {
         try withSecurityScopedAccess(to: fileURL) {
+            let result: IONFILEEncodingValueMapper
             switch encoding {
             case .byteBuffer:
-                try readFileAsBase64EncodedString(from: fileURL)
+                let fileData = try readFileAsByteBuffer(from: fileURL)
+                result = .byteBuffer(value: fileData)
             case .string(let stringEncoding):
-                try readFileAsString(from: fileURL, using: stringEncoding.stringEncoding)
+                let fileData = try readFileAsString(from: fileURL, using: stringEncoding.stringEncoding)
+                result = .string(encoding: stringEncoding, value: fileData)
             }
+
+            return result
         }
     }
 
@@ -143,8 +148,8 @@ private extension IONFILEManager {
         return try operation()
     }
 
-    func readFileAsBase64EncodedString(from fileURL: URL) throws -> String {
-        try Data(contentsOf: fileURL).base64EncodedString()
+    func readFileAsByteBuffer(from fileURL: URL) throws -> Data {
+        try Data(contentsOf: fileURL)
     }
 
     func readFileAsString(from fileURL: URL, using stringEncoding: String.Encoding) throws -> String {
