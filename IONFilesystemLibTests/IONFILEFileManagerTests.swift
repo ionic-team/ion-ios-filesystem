@@ -612,17 +612,18 @@ extension IONFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedDestinationPath, destinationPath)
     }
 
-    func test_renameItem_sameOriginAndDestination_shouldReturnError() {
+    func test_renameItem_sameOriginAndDestination_shouldDoNothing() throws {
         // Given
-        createFileManager(fileExists: false)
+        let fileManager = createFileManager(fileExists: false)
         let originPath = URL(filePath: "/test/origin")
         let destinationPath = URL(filePath: "/test/origin")
 
         // When
-        XCTAssertThrowsError(try sut.renameItem(fromURL: originPath, toURL: destinationPath)) {
-            // Then
-            XCTAssertEqual($0 as? IONFILEFileManagerError, .sameOriginAndDestinationURLs)
-        }
+        try sut.renameItem(fromURL: originPath, toURL: destinationPath)
+
+        // Then
+        XCTAssertNil(fileManager.capturedOriginPath)
+        XCTAssertNil(fileManager.capturedDestinationPath)
     }
 
     func test_renameDirectory_alreadyExisting_shouldBeSuccessful() throws {
@@ -685,17 +686,19 @@ extension IONFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedDestinationPath, destinationPath)
     }
 
-    func test_copyItem_sameOriginAndDestination_shouldReturnError() {
+    func test_copyItem_sameOriginAndDestination_shouldDoNothing() throws {
         // Given
-        createFileManager(fileExists: false)
+        let fileManager = createFileManager(fileExists: false)
         let originPath = URL(filePath: "/test/origin")
         let destinationPath = URL(filePath: "/test/origin")
 
         // When
-        XCTAssertThrowsError(try sut.copyItem(fromURL: originPath, toURL: destinationPath)) {
-            // Then
-            XCTAssertEqual($0 as? IONFILEFileManagerError, .sameOriginAndDestinationURLs)
-        }
+        try sut.copyItem(fromURL: originPath, toURL: destinationPath)
+
+        // Then
+        XCTAssertNil(fileManager.capturedOriginPath)
+        XCTAssertNil(fileManager.capturedDestinationPath)
+
     }
 
     func test_copyDirectory_alreadyExisting_shouldBeSuccessful() throws {

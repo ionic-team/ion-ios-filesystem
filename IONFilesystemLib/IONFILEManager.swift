@@ -133,7 +133,9 @@ extension IONFILEManager: IONFILEFileManager {
     public func renameItem(fromURL originURL: URL, toURL destinationURL: URL) throws {
         try withSecurityScopedAccess(to: originURL) {
             try withSecurityScopedAccess(to: destinationURL) {
-                try validateIfOperationIsValid(fromURL: originURL, toURL: destinationURL)
+                guard try shouldPerformDualPathOperation(fromURL: originURL, toURL: destinationURL) else {
+                    return
+                }
                 try fileManager.moveItem(at: originURL, to: destinationURL)
             }
         }
@@ -142,7 +144,9 @@ extension IONFILEManager: IONFILEFileManager {
     public func copyItem(fromURL originURL: URL, toURL destinationURL: URL) throws {
         try withSecurityScopedAccess(to: originURL) {
             try withSecurityScopedAccess(to: destinationURL) {
-                try validateIfOperationIsValid(fromURL: originURL, toURL: destinationURL)
+                guard try shouldPerformDualPathOperation(fromURL: originURL, toURL: destinationURL) else {
+                    return
+                }
                 try fileManager.copyItem(at: originURL, to: destinationURL)
             }
         }
@@ -188,9 +192,9 @@ private extension IONFILEManager {
         return rawURL
     }
 
-    func validateIfOperationIsValid(fromURL originURL: URL, toURL destinationURL: URL) throws {
+    func shouldPerformDualPathOperation(fromURL originURL: URL, toURL destinationURL: URL) throws -> Bool {
         guard originURL != destinationURL else {
-            throw IONFILEFileManagerError.sameOriginAndDestinationURLs
+            return false
         }
 
         var isDirectory: ObjCBool = false
@@ -199,6 +203,8 @@ private extension IONFILEManager {
                 try deleteFile(atURL: destinationURL)
             }
         }
+
+        return true
     }
 }
 
