@@ -11,9 +11,9 @@ public protocol IONFILEFileManager {
     func readFileInChunks(atURL: URL, withEncoding: IONFILEEncoding, andChunkSize: Int) throws -> IONFILEChunkPublisher
     func getFileURL(atPath: String, withSearchPath: IONFILESearchPath) throws -> URL
     func deleteFile(atURL: URL) throws
-    func saveFile(atURL: URL, withEncodingAndData: IONFILEEncodingValueMapper, includeIntermediateDirectories: Bool) throws -> URL
+    func saveFile(atURL: URL, withEncodingAndData: IONFILEEncodingValueMapper, includeIntermediateDirectories: Bool) throws
     func appendData(_ data: IONFILEEncodingValueMapper, atURL: URL, includeIntermediateDirectories: Bool) throws
-    func getItemAttributes(atPath: String) throws -> IONFILEItemAttributeModel
+    func getItemAttributes(atURL: URL) throws -> IONFILEItemAttributeModel
     func renameItem(fromURL: URL, toURL: URL) throws
     func copyItem(fromURL: URL, toURL: URL) throws
 }

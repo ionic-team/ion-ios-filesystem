@@ -8,6 +8,7 @@ enum IONFILEFileManagerError: Error {
     case directoryNotFound
     case fileNotFound
     case missingParentFolder
+    case sameOriginAndDestinationURLs
 }
 
 enum IONFILEChunkPublisherError: Error {

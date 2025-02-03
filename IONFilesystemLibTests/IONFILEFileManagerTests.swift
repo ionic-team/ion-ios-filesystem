@@ -44,6 +44,15 @@ extension IONFILEFileManagerTests {
         // Then
         XCTAssertEqual(fileContent, Configuration.fileContent)
     }
+
+    func test_readEntireFile_thatDoesntExist_returnsError() throws {
+        // Given
+        createFileManager()
+        let fileURL: URL = try XCTUnwrap(.init(string: "/file/directory"))
+
+        // When and Then
+        XCTAssertThrowsError(try fetchEntireContent(forURL: fileURL, withEncoding: .string(encoding: .utf8)))
+    }
 }
 
 // MARK: - 'readFileInChunks' tests
@@ -85,6 +94,15 @@ extension IONFILEFileManagerTests {
             // Then
             XCTAssertEqual($0 as? IONFILEChunkPublisherError, .notAbleToReadFile)
         }
+    }
+
+    func test_readFileInChunks_thatDoesntExist_returnsError() throws {
+        // Given
+        createFileManager()
+        let fileURL: URL = try XCTUnwrap(.init(string: "/file/directory"))
+
+        // When and Then
+        XCTAssertThrowsError(try fetchChunkedContent(forURL: fileURL, withEncoding: .string(encoding: .utf8)))
     }
 }
 
@@ -288,7 +306,7 @@ extension IONFILEFileManagerTests {
         let shouldIncludeIntermediateDirectories = false
 
         // When
-        let savedFileURL = try sut.saveFile(
+        try sut.saveFile(
             atURL: fileURL,
             withEncodingAndData: .string(encoding: stringEncoding, value: contentToSave),
             includeIntermediateDirectories: shouldIncludeIntermediateDirectories
@@ -296,7 +314,6 @@ extension IONFILEFileManagerTests {
 
         // Then
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
-        XCTAssertEqual(savedFileURL, fileURL)
 
         let savedFileContent = try fetchEntireContent(forURL: fileURL, withEncoding: .string(encoding: stringEncoding))
         XCTAssertEqual(savedFileContent, contentToSave)
@@ -315,7 +332,7 @@ extension IONFILEFileManagerTests {
         let shouldIncludeIntermediateDirectories = false
 
         // When
-        let savedFileURL = try sut.saveFile(
+        try sut.saveFile(
             atURL: fileURL,
             withEncodingAndData: .byteBuffer(value: contentToSaveData),
             includeIntermediateDirectories: shouldIncludeIntermediateDirectories
@@ -323,7 +340,6 @@ extension IONFILEFileManagerTests {
 
         // Then
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
-        XCTAssertEqual(savedFileURL, fileURL)
 
         let savedFileContent = try fetchEntireContent(forURL: fileURL, withEncoding: .byteBuffer)
         XCTAssertEqual(savedFileContent, contentToSave)
@@ -343,7 +359,7 @@ extension IONFILEFileManagerTests {
         let shouldIncludeIntermediateDirectories = true
 
         // When
-        let savedFileURL = try sut.saveFile(
+        try sut.saveFile(
             atURL: fileURL,
             withEncodingAndData: .string(encoding: stringEncoding, value: contentToSave),
             includeIntermediateDirectories: shouldIncludeIntermediateDirectories
@@ -352,7 +368,6 @@ extension IONFILEFileManagerTests {
         // Then
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
         XCTAssertEqual(fileManager.capturedPath, parentFolderURL)
-        XCTAssertEqual(savedFileURL, fileURL)
 
         let savedFileContent = try fetchEntireContent(forURL: fileURL, withEncoding: .string(encoding: stringEncoding))
         XCTAssertEqual(savedFileContent, contentToSave)
@@ -500,7 +515,7 @@ extension IONFILEFileManagerTests {
         let testDirectory = URL(filePath: "/test/directory")
 
         // When
-        let fileAttributesModel = try sut.getItemAttributes(atPath: testDirectory.path())
+        let fileAttributesModel = try sut.getItemAttributes(atURL: testDirectory)
 
         // Then
         XCTAssertEqual(fileManager.capturedPath, testDirectory)
@@ -523,7 +538,7 @@ extension IONFILEFileManagerTests {
         let testDirectory = URL(filePath: "/test/directory")
 
         // When
-        let fileAttributesModel = try sut.getItemAttributes(atPath: testDirectory.path())
+        let fileAttributesModel = try sut.getItemAttributes(atURL: testDirectory)
 
         // Then
         XCTAssertEqual(fileManager.capturedPath, testDirectory)
@@ -546,7 +561,7 @@ extension IONFILEFileManagerTests {
         let testDirectory = URL(filePath: "/test/directory")
 
         // When
-        let fileAttributesModel = try sut.getItemAttributes(atPath: testDirectory.path())
+        let fileAttributesModel = try sut.getItemAttributes(atURL: testDirectory)
 
         // Then
         XCTAssertEqual(fileManager.capturedPath, testDirectory)
@@ -574,7 +589,7 @@ extension IONFILEFileManagerTests {
         let testDirectory = URL(filePath: "/test/directory")
 
         // When
-        XCTAssertThrowsError(try sut.getItemAttributes(atPath: testDirectory.path())) {
+        XCTAssertThrowsError(try sut.getItemAttributes(atURL: testDirectory)) {
             // Then
             XCTAssertEqual($0 as? MockFileManagerError, error)
         }
@@ -597,18 +612,17 @@ extension IONFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedDestinationPath, destinationPath)
     }
 
-    func test_renameItem_sameOriginAndDestination_shouldDoNothing() throws {
+    func test_renameItem_sameOriginAndDestination_shouldReturnError() {
         // Given
-        let fileManager = createFileManager(fileExists: false)
+        createFileManager(fileExists: false)
         let originPath = URL(filePath: "/test/origin")
         let destinationPath = URL(filePath: "/test/origin")
 
         // When
-        try sut.renameItem(fromURL: originPath, toURL: destinationPath)
-
-        // Then
-        XCTAssertNil(fileManager.capturedOriginPath)
-        XCTAssertNil(fileManager.capturedDestinationPath)
+        XCTAssertThrowsError(try sut.renameItem(fromURL: originPath, toURL: destinationPath)) {
+            // Then
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .sameOriginAndDestinationURLs)
+        }
     }
 
     func test_renameDirectory_alreadyExisting_shouldBeSuccessful() throws {
@@ -671,18 +685,17 @@ extension IONFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedDestinationPath, destinationPath)
     }
 
-    func test_copyItem_sameOriginAndDestination_shouldDoNothing() throws {
+    func test_copyItem_sameOriginAndDestination_shouldReturnError() {
         // Given
-        let fileManager = createFileManager(fileExists: false)
+        createFileManager(fileExists: false)
         let originPath = URL(filePath: "/test/origin")
         let destinationPath = URL(filePath: "/test/origin")
 
         // When
-        try sut.copyItem(fromURL: originPath, toURL: destinationPath)
-
-        // Then
-        XCTAssertNil(fileManager.capturedOriginPath)
-        XCTAssertNil(fileManager.capturedDestinationPath)
+        XCTAssertThrowsError(try sut.copyItem(fromURL: originPath, toURL: destinationPath)) {
+            // Then
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .sameOriginAndDestinationURLs)
+        }
     }
 
     func test_copyDirectory_alreadyExisting_shouldBeSuccessful() throws {
@@ -795,51 +808,53 @@ private extension IONFILEFileManagerTests {
         return try fetchEntireContent(forURL: fileURL, withEncoding: encoding)
     }
 
+    @discardableResult
     func fetchEntireContent(forURL fileURL: URL, withEncoding encoding: IONFILEEncoding) throws -> String {
-        return try treatContent(withEncoding: encoding) {
-            switch try sut.readEntireFile(atURL: fileURL, withEncoding: encoding) {
-            case .byteBuffer(let fileData): fileData.base64EncodedString()
-            case .string(_, let fileData): fileData
-            }
+        let content = switch try sut.readEntireFile(atURL: fileURL, withEncoding: encoding) {
+        case .byteBuffer(let fileData): fileData.base64EncodedString()
+        case .string(_, let fileData): fileData
         }
+        return try treat(content: content, withEncoding: encoding)
     }
 
     func fetchChunkedContent(forFile file: (name: String, extension: String), withEncoding encoding: IONFILEEncoding, forceURLError: Bool = false) throws -> String {
-        var fileURL = try XCTUnwrap(Bundle(for: type(of: self)).url(forResource: file.name, withExtension: file.extension))
-        return try treatContent(withEncoding: encoding) {
-            var result = [String]()
-            var error: Error?
-            let expectation = XCTestExpectation(description: "Wait for chunks to be processed")
-
-            if forceURLError {
-                fileURL.deleteLastPathComponent()
-            }
-            try sut.readFileInChunks(atURL: fileURL, withEncoding: encoding, andChunkSize: 3)   // 3 bytes
-                .sink(receiveCompletion: { completion in
-                    if case .failure(let failure) = completion {
-                        error = failure
-                    }
-                    expectation.fulfill()
-                }, receiveValue: { value in
-                    let chunkToAdd = switch value {
-                    case .byteBuffer(let chunkData): chunkData.base64EncodedString()
-                    case .string(_, let chunkData): chunkData
-                    }
-                    result.append(chunkToAdd)
-                })
-                .store(in: &cancellables)
-
-            // Wait for all chunks to be processed
-            wait(for: [expectation], timeout: 1.0)
-
-            if let error { throw error }
-            return result.joined()
-        }
+        let fileURL = try XCTUnwrap(Bundle(for: type(of: self)).url(forResource: file.name, withExtension: file.extension))
+        return try fetchChunkedContent(forURL: fileURL, withEncoding: encoding, forceURLError: forceURLError)
     }
 
-    func treatContent(withEncoding encoding: IONFILEEncoding, afterReading readOperation: () throws -> String) throws -> String {
-        let fileURLContent = try readOperation()
+    @discardableResult
+    func fetchChunkedContent(forURL url: URL, withEncoding encoding: IONFILEEncoding, forceURLError: Bool = false) throws -> String {
+        var fileURL = url
+        var contentArray = [String]()
+        var error: Error?
+        let expectation = XCTestExpectation(description: "Wait for chunks to be processed")
 
+        if forceURLError {
+            fileURL.deleteLastPathComponent()
+        }
+        try sut.readFileInChunks(atURL: fileURL, withEncoding: encoding, andChunkSize: 3)   // 3 bytes
+            .sink(receiveCompletion: { completion in
+                if case .failure(let failure) = completion {
+                    error = failure
+                }
+                expectation.fulfill()
+            }, receiveValue: { value in
+                let chunkToAdd = switch value {
+                case .byteBuffer(let chunkData): chunkData.base64EncodedString()
+                case .string(_, let chunkData): chunkData
+                }
+                contentArray.append(chunkToAdd)
+            })
+            .store(in: &cancellables)
+
+        // Wait for all chunks to be processed
+        wait(for: [expectation], timeout: 1.0)
+
+        if let error { throw error }
+        return try treat(content: contentArray.joined(), withEncoding: encoding)
+    }
+
+    func treat(content fileURLContent: String, withEncoding encoding: IONFILEEncoding) throws -> String {
         var fileURLUnicodeScalars: String.UnicodeScalarView
         if case .byteBuffer = encoding {
             let fileURLData = try XCTUnwrap(Data(base64Encoded: fileURLContent))

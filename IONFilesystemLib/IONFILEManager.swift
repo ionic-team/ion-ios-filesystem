@@ -10,22 +10,28 @@ public struct IONFILEManager {
 
 extension IONFILEManager: IONFILEDirectoryManager {
     public func createDirectory(atURL pathURL: URL, includeIntermediateDirectories: Bool) throws {
-        try fileManager.createDirectory(at: pathURL, withIntermediateDirectories: includeIntermediateDirectories)
+        try withSecurityScopedAccess(to: pathURL) {
+            try fileManager.createDirectory(at: pathURL, withIntermediateDirectories: includeIntermediateDirectories)
+        }
     }
 
     public func removeDirectory(atURL pathURL: URL, includeIntermediateDirectories: Bool) throws {
-        if !includeIntermediateDirectories {
-            let directoryContents = try listDirectory(atURL: pathURL)
-            if !directoryContents.isEmpty {
-                throw IONFILEDirectoryManagerError.notEmpty
+        try withSecurityScopedAccess(to: pathURL) {
+            if !includeIntermediateDirectories {
+                let directoryContents = try listDirectory(atURL: pathURL)
+                if !directoryContents.isEmpty {
+                    throw IONFILEDirectoryManagerError.notEmpty
+                }
             }
-        }
 
-        try fileManager.removeItem(at: pathURL)
+            try fileManager.removeItem(at: pathURL)
+        }
     }
 
     public func listDirectory(atURL pathURL: URL) throws -> [URL] {
-        try fileManager.contentsOfDirectory(at: pathURL, includingPropertiesForKeys: nil)
+        try withSecurityScopedAccess(to: pathURL) {
+            try fileManager.contentsOfDirectory(at: pathURL, includingPropertiesForKeys: nil)
+        }
     }
 }
 
@@ -62,72 +68,83 @@ extension IONFILEManager: IONFILEFileManager {
     }
 
     public func deleteFile(atURL url: URL) throws {
-        guard fileManager.fileExists(atPath: url.urlPath) else {
-            throw IONFILEFileManagerError.fileNotFound
-        }
+        try withSecurityScopedAccess(to: url) {
+            guard fileManager.fileExists(atPath: url.urlPath) else {
+                throw IONFILEFileManagerError.fileNotFound
+            }
 
-        try fileManager.removeItem(at: url)
+            try fileManager.removeItem(at: url)
+        }
     }
 
-    @discardableResult
-    public func saveFile(atURL fileURL: URL, withEncodingAndData encodingMapper: IONFILEEncodingValueMapper, includeIntermediateDirectories: Bool) throws -> URL {
-        let fileDirectoryURL = fileURL.deletingLastPathComponent()
+    public func saveFile(atURL fileURL: URL, withEncodingAndData encodingMapper: IONFILEEncodingValueMapper, includeIntermediateDirectories: Bool) throws {
+        try withSecurityScopedAccess(to: fileURL) {
+            let fileDirectoryURL = fileURL.deletingLastPathComponent()
 
-        if !fileManager.fileExists(atPath: fileDirectoryURL.urlPath) {
-            if includeIntermediateDirectories {
-                try createDirectory(atURL: fileDirectoryURL, includeIntermediateDirectories: true)
-            } else {
-                throw IONFILEFileManagerError.missingParentFolder
+            if !fileManager.fileExists(atPath: fileDirectoryURL.urlPath) {
+                if includeIntermediateDirectories {
+                    try createDirectory(atURL: fileDirectoryURL, includeIntermediateDirectories: true)
+                } else {
+                    throw IONFILEFileManagerError.missingParentFolder
+                }
+            }
+
+            switch encodingMapper {
+            case .byteBuffer(let value):
+                try value.write(to: fileURL)
+            case .string(let encoding, let value):
+                try value.write(to: fileURL, atomically: false, encoding: encoding.stringEncoding)
             }
         }
-
-        switch encodingMapper {
-        case .byteBuffer(let value):
-            try value.write(to: fileURL)
-        case .string(let encoding, let value):
-            try value.write(to: fileURL, atomically: false, encoding: encoding.stringEncoding)
-        }
-
-        return fileURL
     }
 
     public func appendData(_ encodingMapper: IONFILEEncodingValueMapper, atURL url: URL, includeIntermediateDirectories: Bool) throws {
-        guard fileManager.fileExists(atPath: url.urlPath) else {
-            try saveFile(atURL: url, withEncodingAndData: encodingMapper, includeIntermediateDirectories: includeIntermediateDirectories)
-            return
-        }
-
-        let dataToAppend: Data
-        switch encodingMapper {
-        case .byteBuffer(let value):
-            dataToAppend = value
-        case .string(let encoding, let value):
-            guard let valueData = value.data(using: encoding.stringEncoding) else {
-                throw IONFILEFileManagerError.cantDecodeData
+        try withSecurityScopedAccess(to: url) {
+            guard fileManager.fileExists(atPath: url.urlPath) else {
+                try saveFile(atURL: url, withEncodingAndData: encodingMapper, includeIntermediateDirectories: includeIntermediateDirectories)
+                return
             }
-            dataToAppend = valueData
-        }
 
-        let fileHandle = try FileHandle(forWritingTo: url)
-        try fileHandle.seekToEnd()
-        try fileHandle.write(contentsOf: dataToAppend)
-        try fileHandle.close()
+            let dataToAppend: Data
+            switch encodingMapper {
+            case .byteBuffer(let value):
+                dataToAppend = value
+            case .string(let encoding, let value):
+                guard let valueData = value.data(using: encoding.stringEncoding) else {
+                    throw IONFILEFileManagerError.cantDecodeData
+                }
+                dataToAppend = valueData
+            }
+
+            let fileHandle = try FileHandle(forWritingTo: url)
+            try fileHandle.seekToEnd()
+            try fileHandle.write(contentsOf: dataToAppend)
+            try fileHandle.close()
+        }
     }
 
-    public func getItemAttributes(atPath path: String) throws -> IONFILEItemAttributeModel {
-        let attributesDictionary = try fileManager.attributesOfItem(atPath: path)
-        return .create(from: attributesDictionary)
+    public func getItemAttributes(atURL url: URL) throws -> IONFILEItemAttributeModel {
+        try withSecurityScopedAccess(to: url) {
+            let attributesDictionary = try fileManager.attributesOfItem(atPath: url.urlPath)
+            return .create(from: attributesDictionary)
+        }
     }
 
     public func renameItem(fromURL originURL: URL, toURL destinationURL: URL) throws {
-        try copy(fromURL: originURL, toURL: destinationURL) {
-            try fileManager.moveItem(at: originURL, to: destinationURL)
+        try withSecurityScopedAccess(to: originURL) {
+            try withSecurityScopedAccess(to: destinationURL) {
+                try validateIfOperationIsValid(fromURL: originURL, toURL: destinationURL)
+                try fileManager.moveItem(at: originURL, to: destinationURL)
+            }
         }
     }
 
     public func copyItem(fromURL originURL: URL, toURL destinationURL: URL) throws {
-        try copy(fromURL: originURL, toURL: destinationURL) {
-            try fileManager.copyItem(at: originURL, to: destinationURL)
+        try withSecurityScopedAccess(to: originURL) {
+            try withSecurityScopedAccess(to: destinationURL) {
+                try validateIfOperationIsValid(fromURL: originURL, toURL: destinationURL)
+                try fileManager.copyItem(at: originURL, to: destinationURL)
+            }
         }
     }
 }
@@ -171,9 +188,9 @@ private extension IONFILEManager {
         return rawURL
     }
 
-    func copy(fromURL originURL: URL, toURL destinationURL: URL, performOperation: () throws -> Void) throws {
+    func validateIfOperationIsValid(fromURL originURL: URL, toURL destinationURL: URL) throws {
         guard originURL != destinationURL else {
-            return
+            throw IONFILEFileManagerError.sameOriginAndDestinationURLs
         }
 
         var isDirectory: ObjCBool = false
@@ -182,8 +199,6 @@ private extension IONFILEManager {
                 try deleteFile(atURL: destinationURL)
             }
         }
-
-        try performOperation()
     }
 }
 
