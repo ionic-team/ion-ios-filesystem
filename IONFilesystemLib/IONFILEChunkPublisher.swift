@@ -48,7 +48,7 @@ private class IONFILEChunkSubscription<S: Subscriber>: Subscription where S.Inpu
                     case .byteBuffer: chunkToEmit = .byteBuffer(value: chunk)
                     case .string(let encoding):
                         guard let chunkText = String(data: chunk, encoding: encoding.stringEncoding) else {
-                            throw IONFILEChunkPublisherError.cantEncodeData
+                            throw IONFILEChunkPublisherError.cantEncodeData(usingEncoding: encoding)
                         }
                         chunkToEmit = .string(encoding: encoding, value: chunkText)
                     }

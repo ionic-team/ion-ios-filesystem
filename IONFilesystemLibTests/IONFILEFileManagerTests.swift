@@ -209,7 +209,7 @@ extension IONFILEFileManagerTests {
         // When
         XCTAssertThrowsError(try sut.getFileURL(atPath: filePath, withSearchPath: .directory(type: directoryType))) {
             // Then
-            XCTAssertEqual($0 as? IONFILEFileManagerError, .directoryNotFound)
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .directoryNotFound(atPath: filePath))
         }
     }
 
@@ -248,7 +248,7 @@ extension IONFILEFileManagerTests {
         // When
         XCTAssertThrowsError(try sut.getFileURL(atPath: emptyFilePath, withSearchPath: .raw)) {
             // Then
-            XCTAssertEqual($0 as? IONFILEFileManagerError, .cantCreateURL)
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .cantCreateURL(forPath: emptyFilePath))
         }
     }
 }
@@ -275,7 +275,7 @@ extension IONFILEFileManagerTests {
         // When
         XCTAssertThrowsError(try sut.deleteFile(atURL: filePath)) {
             // Then
-            XCTAssertEqual($0 as? IONFILEFileManagerError, .fileNotFound)
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .fileNotFound(atPath: filePath.urlPath))
         }
     }
 
@@ -495,7 +495,7 @@ extension IONFILEFileManagerTests {
             includeIntermediateDirectories: false)
         ) {
             // Then
-            XCTAssertEqual($0 as? IONFILEFileManagerError, .cantDecodeData)
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .cantDecodeData(usingEncoding: stringEncoding))
         }
     }
 }

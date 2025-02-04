@@ -69,8 +69,9 @@ extension IONFILEManager: IONFILEFileManager {
 
     public func deleteFile(atURL url: URL) throws {
         try withSecurityScopedAccess(to: url) {
-            guard fileManager.fileExists(atPath: url.urlPath) else {
-                throw IONFILEFileManagerError.fileNotFound
+            let path = url.urlPath
+            guard fileManager.fileExists(atPath: path) else {
+                throw IONFILEFileManagerError.fileNotFound(atPath: path)
             }
 
             try fileManager.removeItem(at: url)
@@ -111,7 +112,7 @@ extension IONFILEManager: IONFILEFileManager {
                 dataToAppend = value
             case .string(let encoding, let value):
                 guard let valueData = value.data(using: encoding.stringEncoding) else {
-                    throw IONFILEFileManagerError.cantDecodeData
+                    throw IONFILEFileManagerError.cantDecodeData(usingEncoding: encoding)
                 }
                 dataToAppend = valueData
             }
@@ -179,7 +180,7 @@ private extension IONFILEManager {
 
     func resolveDirectoryURL(forType directoryType: IONFILEDirectoryType, with path: String) throws -> URL {
         guard let directoryURL = directoryType.fetchURL(using: fileManager) else {
-            throw IONFILEFileManagerError.directoryNotFound
+            throw IONFILEFileManagerError.directoryNotFound(atPath: path)
         }
 
         return path.isEmpty ? directoryURL : directoryURL.urlWithAppendingPath(path)
@@ -187,7 +188,7 @@ private extension IONFILEManager {
 
     func resolveRawURL(from path: String) throws -> URL {
         guard let rawURL = URL(string: path) else {
-            throw IONFILEFileManagerError.cantCreateURL
+            throw IONFILEFileManagerError.cantCreateURL(forPath: path)
         }
         return rawURL
     }

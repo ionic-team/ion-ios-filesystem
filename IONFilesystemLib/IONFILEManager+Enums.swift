@@ -10,7 +10,7 @@ public enum IONFILEEncodingValueMapper {
     case string(encoding: IONFILEStringEncoding, value: String)
 }
 
-public enum IONFILEStringEncoding {
+public enum IONFILEStringEncoding: String {
     case ascii
     case utf8
     case utf16
