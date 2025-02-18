@@ -11,6 +11,16 @@ public struct IONFILEManager {
 extension IONFILEManager: IONFILEDirectoryManager {
     public func createDirectory(atURL pathURL: URL, includeIntermediateDirectories: Bool) throws {
         try withSecurityScopedAccess(to: pathURL) {
+            let parentDirectoryURL = pathURL.deletingLastPathComponent()
+            if !fileManager.fileExists(atPath: parentDirectoryURL.urlPath) {
+                if !includeIntermediateDirectories {
+                    throw IONFILEFileManagerError.missingParentFolder
+                }
+            }
+            if fileManager.fileExists(atPath: pathURL.urlPath) {
+                throw IONFILEDirectoryManagerError.alreadyExists
+            }
+            
             try fileManager.createDirectory(at: pathURL, withIntermediateDirectories: includeIntermediateDirectories)
         }
     }

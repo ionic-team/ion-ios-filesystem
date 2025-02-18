@@ -7,6 +7,7 @@ class MockFileManager: FileManager {
     private let fileAttributes: [FileAttributeKey: Any]
     private let shouldBeDirectory: ObjCBool
     private let mockTemporaryDirectory: URL?
+    private let fileExistsExclusions: [String]
 
     var fileExists: Bool
 
@@ -16,7 +17,7 @@ class MockFileManager: FileManager {
     private(set) var capturedIntermediateDirectories: Bool = false
     private(set) var capturedSearchPathDirectory: FileManager.SearchPathDirectory?
 
-    init(error: MockFileManagerError? = nil, shouldDirectoryHaveContent: Bool = false, urlsWithinDirectory: [URL] = [], fileExists: Bool = true, fileAttributes: [FileAttributeKey: Any] = [:], shouldBeDirectory: ObjCBool = true, mockTemporaryDirectory: URL? = nil) {
+    init(error: MockFileManagerError? = nil, shouldDirectoryHaveContent: Bool = false, urlsWithinDirectory: [URL] = [], fileExists: Bool = true, fileAttributes: [FileAttributeKey: Any] = [:], shouldBeDirectory: ObjCBool = true, mockTemporaryDirectory: URL? = nil, fileExistsExclusions: [String] = []) {
         self.error = error
         self.shouldDirectoryHaveContent = shouldDirectoryHaveContent
         self.urlsWithinDirectory = urlsWithinDirectory
@@ -24,6 +25,7 @@ class MockFileManager: FileManager {
         self.fileAttributes = fileAttributes
         self.shouldBeDirectory = shouldBeDirectory
         self.mockTemporaryDirectory = mockTemporaryDirectory
+        self.fileExistsExclusions = fileExistsExclusions
     }
 }
 
@@ -77,13 +79,21 @@ extension MockFileManager {
     }
 
     override func fileExists(atPath path: String) -> Bool {
-        fileExists
+        return fileExistsWithExclusions(path: path)
     }
 
     override func fileExists(atPath path: String, isDirectory: UnsafeMutablePointer<ObjCBool>?) -> Bool {
         isDirectory?.pointee = shouldBeDirectory
 
-        return fileExists
+        return fileExistsWithExclusions(path: path)
+    }
+    
+    private func fileExistsWithExclusions(path: String) -> Bool {
+        if fileExistsExclusions.contains(where: { path.contains($0) }) {
+            return !fileExists
+        } else {
+            return fileExists
+        }
     }
 
     override func attributesOfItem(atPath path: String) throws -> [FileAttributeKey: Any] {

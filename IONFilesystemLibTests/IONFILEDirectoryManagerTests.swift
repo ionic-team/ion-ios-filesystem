@@ -19,13 +19,43 @@ final class IONFILEDirectoryManagerTests: XCTestCase {
         XCTAssertEqual(fileManager.capturedPath, testDirectory)
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
     }
+    
+    func test_createDirectory_parentFolderMissing_shouldntCreateIt_returnsError() throws {
+        // Given
+        createFileManager(fileExists: false)
+        let testDirectory = URL(filePath: "/test/directory")
+        let shouldIncludeIntermediateDirectories = false
+
+        // When
+        XCTAssertThrowsError(
+            try sut.createDirectory(atURL: testDirectory, includeIntermediateDirectories: shouldIncludeIntermediateDirectories)
+        ) {
+            // Then
+            XCTAssertEqual($0 as? IONFILEFileManagerError, IONFILEFileManagerError.missingParentFolder)
+        }
+    }
+    
+    func test_createDirectory_alreadyExists_returnsError() throws {
+        // Given
+        createFileManager()
+        let testDirectory = URL(filePath: "/test/alreadyExists")
+        let shouldIncludeIntermediateDirectories = false
+
+        // When
+        XCTAssertThrowsError(
+            try sut.createDirectory(atURL: testDirectory, includeIntermediateDirectories: shouldIncludeIntermediateDirectories)
+        ) {
+            // Then
+            XCTAssertEqual($0 as? IONFILEDirectoryManagerError, IONFILEDirectoryManagerError.alreadyExists)
+        }
+    }
 
     func test_createDirectory_butFails_shouldReturnAnError() {
         // Given
         let error = MockFileManagerError.createDirectoryError
         createFileManager(with: error)
         let testDirectory = URL(filePath: "/test/directory")
-        let shouldIncludeIntermediateDirectories = false
+        let shouldIncludeIntermediateDirectories = true
 
         // When
         XCTAssertThrowsError(
@@ -137,8 +167,8 @@ final class IONFILEDirectoryManagerTests: XCTestCase {
 }
 
 private extension IONFILEDirectoryManagerTests {
-    @discardableResult func createFileManager(with error: MockFileManagerError? = nil, shouldDirectoryHaveContent: Bool = false) -> MockFileManager {
-        let fileManager = MockFileManager(error: error, shouldDirectoryHaveContent: shouldDirectoryHaveContent)
+    @discardableResult func createFileManager(with error: MockFileManagerError? = nil, shouldDirectoryHaveContent: Bool = false, fileExists: Bool = true, exclusions: [String] = ["directory"]) -> MockFileManager {
+        let fileManager = MockFileManager(error: error, shouldDirectoryHaveContent: shouldDirectoryHaveContent, fileExists: fileExists, fileExistsExclusions: exclusions)
         sut = IONFILEManager(fileManager: fileManager)
 
         return fileManager

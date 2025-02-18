@@ -1,21 +1,28 @@
 import Foundation
 
-enum IONFILEDirectoryManagerError: LocalizedError {
-    case notEmpty
+public protocol IONFILEError: LocalizedError, Equatable {
+}
 
-    var errorDescription: String? {
-        "Folder is not empty."
+public enum IONFILEDirectoryManagerError: IONFILEError {
+    case notEmpty
+    case alreadyExists
+
+    public var errorDescription: String? {
+        switch self {
+        case .notEmpty: "Directory is not empty."
+        case .alreadyExists: "The directory you are trying to create already exists."
+        }
     }
 }
 
-enum IONFILEFileManagerError: LocalizedError, Equatable {
+public enum IONFILEFileManagerError: IONFILEError {
     case cantCreateURL(forPath: String)
     case cantDecodeData(usingEncoding: IONFILEStringEncoding)
     case directoryNotFound(atPath: String)
     case fileNotFound(atPath: String)
     case missingParentFolder
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .cantCreateURL(let path): "Can't create URL for path '\(path)'."
         case .cantDecodeData(let encoding): "Can't decode data using encoding .\(encoding.rawValue)."
@@ -26,11 +33,11 @@ enum IONFILEFileManagerError: LocalizedError, Equatable {
     }
 }
 
-enum IONFILEChunkPublisherError: LocalizedError, Equatable {
+public enum IONFILEChunkPublisherError: IONFILEError {
     case cantEncodeData(usingEncoding: IONFILEStringEncoding)
     case notAbleToReadFile
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .cantEncodeData(let encoding): "Can't encode data using encoding .\(encoding.rawValue)."
         case .notAbleToReadFile: "Can't read file."
