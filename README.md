@@ -52,12 +52,12 @@ The `IONFILEDirectoryManager` manages operations on directories:
 The `IONFILEFileManager` contains most of the operations of the native library, for to manipulating files:
 
 - `readEntireFile` - Reads the contents of a file at `URL` to memory.
-- `readFileInChunks` - Reads the contents of a file in chunks. Especially useful for large files that may not fit in memory. See [this section](reading-in-chunks-publisher) for more information
-- `getFileURL` - get a native `URL` for a certain file, that may be located in a specific [Search Path](file-search-paths).
+- `readFileInChunks` - Reads the contents of a file in chunks. Especially useful for large files that may not fit in memory. See [this section](#reading-in-chunks-publisher) for more information
+- `getFileURL` - get a native `URL` for a certain file, that may be located in a specific [Search Path](#file-search-paths).
 - `deleteFile` - deletes a file at the specified `URL`
 - `saveFile` - Write contents to a file - overwriting any existing content. You may indicate to create missing parent directories via `includeIntermediateDirectories` attribute.
 - `appendData` - Append contents to the end of a file. You may indicate to create missing parent directories via `includeIntermediateDirectories` attribute.
-- `getItemAttributes` - Get extra information on a specific file (or directory) at the specified `URL`. See [File Attributes model](file-attributes-model) section for more information on what the information is.
+- `getItemAttributes` - Get extra information on a specific file (or directory) at the specified `URL`. See [File Attributes model](#file-attributes-model) section for more information on what the information is.
 - `renameItem` - Rename or move a file (or directory) at `fromURL` to `toURL`. Note that you cannot move to an existing directory.
 - `copyItem` - Copy a file (or directory + all its contents) at `fromURL` to `toURL`. Note that you cannot copy to `toURL` if it's an existing directory.
 
