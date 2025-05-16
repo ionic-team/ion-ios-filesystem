@@ -192,15 +192,14 @@ private extension IONFILEManager {
         guard let directoryURL = directoryType.fetchURL(using: fileManager) else {
             throw IONFILEFileManagerError.directoryNotFound(atPath: path)
         }
-
-        return path.isEmpty ? directoryURL : directoryURL.urlWithAppendingPath(path)
+        return fixPathComponentsIfNeeded(path.isEmpty ? directoryURL : directoryURL.urlWithAppendingPath(path))
     }
 
     func resolveRawURL(from path: String) throws -> URL {
         guard let rawURL = URL(string: path) else {
             throw IONFILEFileManagerError.cantCreateURL(forPath: path)
         }
-        return rawURL
+        return fixPathComponentsIfNeeded(rawURL)
     }
 
     func shouldPerformDualPathOperation(fromURL originURL: URL, toURL destinationURL: URL) throws -> Bool {
@@ -216,6 +215,30 @@ private extension IONFILEManager {
         }
 
         return true
+    }
+    
+    private func fixPathComponentsIfNeeded(_ url: URL) -> URL {
+        // 1) add trailing slash in case of directory
+        var isDirectory: ObjCBool = false
+        var urlToReturn = url
+        let fileExists = fileManager.fileExists(atPath: url.urlPath, isDirectory: &isDirectory)
+        if !urlToReturn.absoluteString.hasSuffix("/"), isDirectory.boolValue || (!fileExists && !url.pathExtension.isEmpty) {
+            urlToReturn = urlToReturn.appendingPathComponent("")
+        }
+        // 2) remove duplicate slashes //, except for the ones indicating the scheme (e.g. 'file://')
+        var urlStringWithoutDuplicateSeparators = urlToReturn.absoluteString.replacingOccurrences(
+            of: #"(?<!:)/{2,}(?!/)"#,
+            with: "/",
+            options: .regularExpression
+        )
+        if (urlToReturn.absoluteString.contains(":///")) {
+            // the regex may ommit a slash after ://, which is incorrect because it breaks in case of an absolute file path
+            urlStringWithoutDuplicateSeparators = urlStringWithoutDuplicateSeparators.replacingOccurrences(of: "://", with: ":///")
+        }
+        if let finalUrl = URL(string: urlStringWithoutDuplicateSeparators) {
+            urlToReturn = finalUrl
+        }
+        return urlToReturn
     }
 }
 
