@@ -120,7 +120,7 @@ extension IONFILEFileManagerTests {
 
         // Then
         XCTAssertEqual(fileManager.capturedSearchPathDirectory, .cachesDirectory)
-        XCTAssertEqual(fileURL.appending(path: filePath), returnedURL)
+        XCTAssertEqual(fileURL.appendingPathComponent(filePath, isDirectory: true), returnedURL)
     }
 
     func test_getFileURL_fromDirectorySearchPath_containingMultipleFiles_returnsFirstFileSuccessfully() throws {
@@ -128,7 +128,7 @@ extension IONFILEFileManagerTests {
         let fileURL: URL = try XCTUnwrap(.init(string: "/file/directory"))
         let ignoredFileURL: URL = try XCTUnwrap(.init(string: "another_file/directory"))
         let fileManager = createFileManager(urlsWithinDirectory: [fileURL, ignoredFileURL])
-        let filePath = "/test/directory"
+        let filePath = "/test///directory//"
         let directoryType = IONFILEDirectoryType.cache
 
         // When
@@ -136,7 +136,8 @@ extension IONFILEFileManagerTests {
 
         // Then
         XCTAssertEqual(fileManager.capturedSearchPathDirectory, .cachesDirectory)
-        XCTAssertEqual(fileURL.appending(path: filePath), returnedURL)
+        XCTAssert(!returnedURL.absoluteString.contains("//"))
+        XCTAssertEqual(fileURL.appendingPathComponent("/test/directory", isDirectory: true), returnedURL)
     }
 
     func test_getFileURL_fromDocumentDirectorySearchPath_returnsFileSuccessfully() throws {
@@ -151,7 +152,7 @@ extension IONFILEFileManagerTests {
 
         // Then
         XCTAssertEqual(fileManager.capturedSearchPathDirectory, .documentDirectory)
-        XCTAssertEqual(fileURL.appending(path: filePath), returnedURL)
+        XCTAssertEqual(fileURL.appendingPathComponent(filePath, isDirectory: true), returnedURL)
     }
 
     func test_getFileURL_fromLibraryDirectorySearchPath_returnsFileSuccessfully() throws {
@@ -166,14 +167,14 @@ extension IONFILEFileManagerTests {
 
         // Then
         XCTAssertEqual(fileManager.capturedSearchPathDirectory, .libraryDirectory)
-        XCTAssertEqual(fileURL.appending(path: filePath), returnedURL)
+        XCTAssertEqual(fileURL.appendingPathComponent(filePath, isDirectory: true), returnedURL)
     }
 
     func test_getFileURL_fromNotSyncedLibraryDirectorySearchPath_returnsFileSuccessfully() throws {
         // Given
         let fileURL: URL = try XCTUnwrap(.init(string: "/file/directory"))
         let fileManager = createFileManager(urlsWithinDirectory: [fileURL])
-        let filePath = "/test/directory"
+        let filePath = "/test/directory/"
         let directoryType = IONFILEDirectoryType.notSyncedLibrary
 
         // When
@@ -181,7 +182,8 @@ extension IONFILEFileManagerTests {
 
         // Then
         XCTAssertEqual(fileManager.capturedSearchPathDirectory, .libraryDirectory)
-        XCTAssertEqual(fileURL.appending(path: "NoCloud").appending(path: filePath), returnedURL)
+        XCTAssert(!returnedURL.absoluteString.contains("//"))
+        XCTAssertEqual(fileURL.appending(path: "NoCloud").appendingPathComponent("/test/directory", isDirectory: true), returnedURL)
     }
 
     func test_getFileURL_fromTemporaryDirectorySearchPath_returnsFileSuccessfully() throws {
@@ -197,7 +199,7 @@ extension IONFILEFileManagerTests {
 
         // Then
         XCTAssertEqual(fileManager.temporaryDirectory, parentFolderURL)
-        XCTAssertEqual(parentFolderURL.appending(path: filePath), returnedURL)
+        XCTAssertEqual(parentFolderURL.appendingPathComponent(filePath, isDirectory: true), returnedURL)
     }
 
     func test_getFileURL_fromDirectorySearchPath_containingNoFiles_returnsError() {
@@ -225,7 +227,7 @@ extension IONFILEFileManagerTests {
 
         // Then
         XCTAssertEqual(fileManager.capturedSearchPathDirectory, .cachesDirectory)
-        XCTAssertEqual(fileURL, returnedURL)
+        XCTAssertEqual(fileURL.appendingPathComponent(""), returnedURL)
     }
 
     func test_getFileURL_rawFile_returnsFileSuccessfully() throws {
@@ -237,7 +239,7 @@ extension IONFILEFileManagerTests {
         let returnedURL = try sut.getFileURL(atPath: filePath, withSearchPath: .raw)
 
         // Then
-        XCTAssertEqual(filePath, returnedURL.path())
+        XCTAssertEqual(filePath + "/", returnedURL.path())
     }
 
     func test_getFileURL_rawFile_fromInvalidPath_returnsError() {
@@ -250,6 +252,30 @@ extension IONFILEFileManagerTests {
             // Then
             XCTAssertEqual($0 as? IONFILEFileManagerError, .cantCreateURL(forPath: emptyFilePath))
         }
+    }
+    
+    func test_getFileURL_withFileScheme_returnsFileSuccessfully() throws {
+        // Given
+        createFileManager()
+        let filePath = "file://test/directory"
+
+        // When
+        let returnedURL = try sut.getFileURL(atPath: filePath, withSearchPath: .raw)
+
+        // Then
+        XCTAssertEqual(filePath + "/", returnedURL.absoluteString)
+    }
+    
+    func test_getFileURL_withFileSchemeTripleSlash_returnsFileSuccessfully() throws {
+        // Given
+        createFileManager()
+        let filePath = "file:///test/directory"
+
+        // When
+        let returnedURL = try sut.getFileURL(atPath: filePath, withSearchPath: .raw)
+
+        // Then
+        XCTAssertEqual(filePath + "/", returnedURL.absoluteString)
     }
 }
 
