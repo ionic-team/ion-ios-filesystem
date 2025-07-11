@@ -241,6 +241,18 @@ extension IONFILEFileManagerTests {
         // Then
         XCTAssertEqual(filePath + "/", returnedURL.path())
     }
+    
+    func test_getFileURL_doesNotExist_returnsFileSuccessfully() throws {
+        // Given
+        createFileManager(fileExists: false)
+        let filePath = "/test/directory"
+
+        // When
+        let returnedURL = try sut.getFileURL(atPath: filePath, withSearchPath: .raw)
+
+        // Then
+        XCTAssertEqual(filePath + "/", returnedURL.path())
+    }
 
     func test_getFileURL_rawFile_fromInvalidPath_returnsError() {
         // Given
@@ -276,6 +288,18 @@ extension IONFILEFileManagerTests {
 
         // Then
         XCTAssertEqual(filePath + "/", returnedURL.absoluteString)
+    }
+    
+    func test_getFileURL_withNonExistingFile_returnsFileSuccessfullyWithoutTrailingSlash() throws {
+        // Given
+        createFileManager(fileExists: false, shouldBeDirectory: false)
+        let filePath = "/test/directory/random_doc.pdf"
+
+        // When
+        let returnedURL = try sut.getFileURL(atPath: filePath, withSearchPath: .raw)
+
+        // Then
+        XCTAssertEqual(filePath, returnedURL.absoluteString)
     }
 }
 

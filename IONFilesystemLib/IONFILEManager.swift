@@ -222,7 +222,7 @@ private extension IONFILEManager {
         var isDirectory: ObjCBool = false
         var urlToReturn = url
         let fileExists = fileManager.fileExists(atPath: url.urlPath, isDirectory: &isDirectory)
-        if !urlToReturn.absoluteString.hasSuffix("/"), isDirectory.boolValue || (!fileExists && !url.pathExtension.isEmpty) {
+        if !urlToReturn.absoluteString.hasSuffix("/"), isDirectory.boolValue || (!fileExists && url.pathExtension.isEmpty) {
             urlToReturn = urlToReturn.appendingPathComponent("")
         }
         // 2) remove duplicate slashes //, except for the ones indicating the scheme (e.g. 'file://')
