@@ -106,6 +106,56 @@ extension IONFILEFileManagerTests {
     }
 }
 
+// MARK: - 'readRange' tests
+extension IONFILEFileManagerTests {
+    func test_readRange_withExampleEncoding_returnsCorrectData() throws {
+        // Given
+        createFileManager()
+        let fileURL = try XCTUnwrap(fetchConfigurationFile())
+        let offset: UInt64 = 7
+        let length = 5
+        let encoding: IONFILEStringEncoding = .utf8
+        
+        // When
+        let result = try sut.readRange(atURL: fileURL, offset: offset, length: length, withEncoding: .string(encoding: encoding))
+        
+        // Then
+        guard case .string(let resultEncoding, let resultValue) = result else {
+            XCTFail("Wrong result type")
+            return
+        }
+        XCTAssertEqual(resultEncoding, encoding)
+        XCTAssertEqual(resultValue, "world")
+    }
+    
+    func test_readRange_withByteBufferEncoding_returnsCorrectData() throws {
+        // Given
+        createFileManager()
+        let fileURL = try XCTUnwrap(fetchConfigurationFile())
+        let offset: UInt64 = 7
+        let length = 5
+        
+        // When
+        let result = try sut.readRange(atURL: fileURL, offset: offset, length: length, withEncoding: .byteBuffer)
+        
+        // Then
+        guard case .byteBuffer(let resultValue) = result else {
+            XCTFail("Wrong result type")
+            return
+        }
+        XCTAssertEqual(String(data: resultValue, encoding: .utf8), "world")
+    }
+
+    func test_readRange_fileNotFound_returnsError() throws {
+        // Given
+        createFileManager()
+        let fileURL = try XCTUnwrap(URL(string: "/file/that/does/not/exist"))
+        
+        // When & Then
+        XCTAssertThrowsError(try sut.readRange(atURL: fileURL, offset: 0, length: 10, withEncoding: .byteBuffer))
+    }
+}
+
 // MARK: - 'getFileURL' tests
 extension IONFILEFileManagerTests {
     func test_getFileURL_fromDirectorySearchPath_containingSingleFile_returnsFileSuccessfully() throws {

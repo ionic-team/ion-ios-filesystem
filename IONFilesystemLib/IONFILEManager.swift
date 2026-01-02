@@ -68,6 +68,32 @@ extension IONFILEManager: IONFILEFileManager {
         }
     }
 
+    public func readRange(atURL fileURL: URL, offset: UInt64, length: Int, withEncoding encoding: IONFILEEncoding) throws -> IONFILEEncodingValueMapper {
+        try withSecurityScopedAccess(to: fileURL) {
+            let fileHandle = try FileHandle(forReadingFrom: fileURL)
+            defer {
+                try? fileHandle.close()
+            }
+            
+            try fileHandle.seek(toOffset: offset)
+            let data = try fileHandle.read(upToCount: length)
+            
+            guard let data = data else {
+                throw IONFILEFileManagerError.fileNotFound(atPath: fileURL.path)
+            }
+            
+            switch encoding {
+            case .byteBuffer:
+                return .byteBuffer(value: data)
+            case .string(let stringEncoding):
+                guard let stringData = String(data: data, encoding: stringEncoding.stringEncoding) else {
+                    throw IONFILEFileManagerError.cantDecodeData(usingEncoding: stringEncoding)
+                }
+                return .string(encoding: stringEncoding, value: stringData)
+            }
+        }
+    }
+
     public func getFileURL(atPath path: String, withSearchPath searchPath: IONFILESearchPath) throws -> URL {
         switch searchPath {
         case .directory(let type):
