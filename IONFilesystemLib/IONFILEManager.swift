@@ -47,24 +47,35 @@ extension IONFILEManager: IONFILEDirectoryManager {
 
 extension IONFILEManager: IONFILEFileManager {
     public func readEntireFile(atURL fileURL: URL, withEncoding encoding: IONFILEEncoding) throws -> IONFILEEncodingValueMapper {
-        try withSecurityScopedAccess(to: fileURL) {
-            let result: IONFILEEncodingValueMapper
-            switch encoding {
-            case .byteBuffer:
-                let fileData = try readFileAsByteBuffer(from: fileURL)
-                result = .byteBuffer(value: fileData)
-            case .string(let stringEncoding):
-                let fileData = try readFileAsString(from: fileURL, using: stringEncoding.stringEncoding)
-                result = .string(encoding: stringEncoding, value: fileData)
-            }
-
-            return result
-        }
+        try readEntireFile(atURL: fileURL, withEncoding: encoding, andOffset: 0, andLength: -1)
     }
 
     public func readFileInChunks(atURL fileURL: URL, withEncoding encoding: IONFILEEncoding, andChunkSize chunkSize: Int) throws -> IONFILEChunkPublisher {
+        try readFileInChunks(atURL: fileURL, withEncoding: encoding, andChunkSize: chunkSize, andOffset: 0, andLength: -1)
+    }
+    
+    public func readEntireFile(atURL fileURL: URL, withEncoding encoding: IONFILEEncoding, andOffset offset: Int, andLength length: Int) throws -> IONFILEEncodingValueMapper {
         try withSecurityScopedAccess(to: fileURL) {
-            .init(fileURL, chunkSize, encoding)
+            let result: IONFILEEncodingValueMapper
+            if (offset > 0 || length > 0) {
+                result = try readPartialFile(fileURL, encoding, offset, length)
+            } else {
+                switch encoding {
+                case .byteBuffer:
+                    let fileData = try readFileAsByteBuffer(from: fileURL)
+                    result = .byteBuffer(value: fileData)
+                case .string(let stringEncoding):
+                    let fileData = try readFileAsString(from: fileURL, using: stringEncoding.stringEncoding)
+                    result = .string(encoding: stringEncoding, value: fileData)
+                }
+            }
+            return result
+        }
+    }
+    
+    public func readFileInChunks(atURL fileURL: URL, withEncoding encoding: IONFILEEncoding, andChunkSize chunkSize: Int, andOffset offset: Int, andLength length: Int) throws -> IONFILEChunkPublisher {
+        try withSecurityScopedAccess(to: fileURL) {
+            .init(fileURL, chunkSize, encoding, offset, length)
         }
     }
 
@@ -178,6 +189,35 @@ private extension IONFILEManager {
         }
 
         return try operation()
+    }
+    
+    func readPartialFile(_ fileURL: URL, _ encoding: IONFILEEncoding, _ offset: Int, _ length: Int) throws -> IONFILEEncodingValueMapper {
+        let fileHandle = try FileHandle(forReadingFrom: fileURL)
+        defer {
+            try? fileHandle.close()
+        }
+        
+        if (offset > 0) {
+            try fileHandle.seek(toOffset: UInt64(offset))
+        }
+        let data: Data?
+        if (length > 0) {
+            data = try fileHandle.read(upToCount: length)
+        } else {
+            data = try fileHandle.readToEnd()
+        }
+        
+        let nonNilData: Data = data ?? Data()
+        
+        switch encoding {
+        case .byteBuffer:
+            return .byteBuffer(value: nonNilData)
+        case .string(let stringEncoding):
+            guard let stringData = String(data: nonNilData, encoding: stringEncoding.stringEncoding) else {
+                throw IONFILEFileManagerError.cantDecodeData(usingEncoding: stringEncoding)
+            }
+            return .string(encoding: stringEncoding, value: stringData)
+        }
     }
 
     func readFileAsByteBuffer(from fileURL: URL) throws -> Data {

@@ -9,6 +9,8 @@ public protocol IONFILEDirectoryManager {
 public protocol IONFILEFileManager {
     func readEntireFile(atURL: URL, withEncoding: IONFILEEncoding) throws -> IONFILEEncodingValueMapper
     func readFileInChunks(atURL: URL, withEncoding: IONFILEEncoding, andChunkSize: Int) throws -> IONFILEChunkPublisher
+    func readEntireFile(atURL: URL, withEncoding: IONFILEEncoding, andOffset: Int, andLength: Int) throws -> IONFILEEncodingValueMapper
+    func readFileInChunks(atURL: URL, withEncoding: IONFILEEncoding, andChunkSize: Int, andOffset: Int, andLength: Int) throws -> IONFILEChunkPublisher
     func getFileURL(atPath: String, withSearchPath: IONFILESearchPath) throws -> URL
     func deleteFile(atURL: URL) throws
     func saveFile(atURL: URL, withEncodingAndData: IONFILEEncodingValueMapper, includeIntermediateDirectories: Bool) throws
