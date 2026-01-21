@@ -53,6 +53,63 @@ extension IONFILEFileManagerTests {
         // When and Then
         XCTAssertThrowsError(try fetchEntireContent(forURL: fileURL, withEncoding: .string(encoding: .utf8)))
     }
+    
+    func test_readEntireFile_offsetAndLengthWithExampleEncoding_returnsCorrectData() throws {
+        // Given
+        createFileManager()
+        let fileURL = try XCTUnwrap(fetchConfigurationFile())
+        let offset = 7
+        let length = 5
+        let encoding: IONFILEStringEncoding = .utf8
+        
+        // When
+        let result = try sut.readEntireFile(atURL: fileURL, withEncoding: .string(encoding: encoding), andOffset: offset, andLength: length)
+        
+        // Then
+        guard case .string(let resultEncoding, let resultValue) = result else {
+            XCTFail("Wrong result type")
+            return
+        }
+        XCTAssertEqual(resultEncoding, encoding)
+        XCTAssertEqual(resultValue, "world")
+    }
+    
+    func test_readEntire_offsetAndLengthWithByteBufferEncoding_returnsCorrectData() throws {
+        // Given
+        createFileManager()
+        let fileURL = try XCTUnwrap(fetchConfigurationFile())
+        let offset = 7
+        let length = 5
+        
+        // When
+        let result = try sut.readEntireFile(atURL: fileURL, withEncoding: .byteBuffer, andOffset: offset, andLength: length)
+        
+        // Then
+        guard case .byteBuffer(let resultValue) = result else {
+            XCTFail("Wrong result type")
+            return
+        }
+        XCTAssertEqual(String(data: resultValue, encoding: .utf8), "world")
+    }
+    
+    func test_readEntireFile_offsetLargerThanEOF_returnsEmptyString() throws {
+        // Given
+        createFileManager()
+        let fileURL = try XCTUnwrap(fetchConfigurationFile())
+        let offset = 1000
+        let length = 5
+        let encoding: IONFILEStringEncoding = .utf8
+        
+        // When
+        let result = try sut.readEntireFile(atURL: fileURL, withEncoding: .string(encoding: encoding), andOffset: offset, andLength: length)
+        
+        // Then
+        guard case .string(let resultEncoding, let resultValue) = result else {
+            XCTFail("Wrong result type")
+            return
+        }
+        XCTAssertEqual(resultValue, "")
+    }
 }
 
 // MARK: - 'readFileInChunks' tests
@@ -103,6 +160,36 @@ extension IONFILEFileManagerTests {
 
         // When and Then
         XCTAssertThrowsError(try fetchChunkedContent(forURL: fileURL, withEncoding: .string(encoding: .utf8)))
+    }
+    
+    func test_readFileInChunks_withOffsetAndLength_returnsContentSuccessfully() throws {
+        // Given
+        createFileManager()
+        let offset = 7
+        let length = 5
+
+        // When
+        let fileContent = try fetchChunkedContent(
+            forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .string(encoding: .utf8), andOffset: offset, andLength: length
+        )
+
+        // Then
+        XCTAssertEqual(fileContent, "world")
+    }
+    
+    func test_readFileInChunks_offsetLargerThanEOF_returnsEmptyString() throws {
+        // Given
+        createFileManager()
+        let offset = 1000
+        let length = 5
+
+        // When
+        let fileContent = try fetchChunkedContent(
+            forFile: (Configuration.fileName, Configuration.fileExtension), withEncoding: .string(encoding: .utf8), andOffset: offset, andLength: length
+        )
+
+        // Then
+        XCTAssertEqual(fileContent, "")
     }
 }
 
@@ -870,13 +957,13 @@ private extension IONFILEFileManagerTests {
         return try treat(content: content, withEncoding: encoding)
     }
 
-    func fetchChunkedContent(forFile file: (name: String, extension: String), withEncoding encoding: IONFILEEncoding, forceURLError: Bool = false) throws -> String {
+    func fetchChunkedContent(forFile file: (name: String, extension: String), withEncoding encoding: IONFILEEncoding, forceURLError: Bool = false, andOffset offset: Int = 0, andLength length: Int = -1) throws -> String {
         let fileURL = try XCTUnwrap(Bundle(for: type(of: self)).url(forResource: file.name, withExtension: file.extension))
-        return try fetchChunkedContent(forURL: fileURL, withEncoding: encoding, forceURLError: forceURLError)
+        return try fetchChunkedContent(forURL: fileURL, withEncoding: encoding, forceURLError: forceURLError, andOffset: offset, andLength: length)
     }
 
     @discardableResult
-    func fetchChunkedContent(forURL url: URL, withEncoding encoding: IONFILEEncoding, forceURLError: Bool = false) throws -> String {
+    func fetchChunkedContent(forURL url: URL, withEncoding encoding: IONFILEEncoding, forceURLError: Bool = false, andOffset offset: Int = 0, andLength length: Int = -1) throws -> String {
         var fileURL = url
         var contentArray = [String]()
         var error: Error?
@@ -885,7 +972,7 @@ private extension IONFILEFileManagerTests {
         if forceURLError {
             fileURL.deleteLastPathComponent()
         }
-        try sut.readFileInChunks(atURL: fileURL, withEncoding: encoding, andChunkSize: 3)   // 3 bytes
+        try sut.readFileInChunks(atURL: fileURL, withEncoding: encoding, andChunkSize: 3, andOffset: offset, andLength: length)   // 3 bytes
             .sink(receiveCompletion: { completion in
                 if case .failure(let failure) = completion {
                     error = failure
