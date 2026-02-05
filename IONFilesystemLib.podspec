@@ -1,15 +1,18 @@
-Pod::Spec.new do |spec|
-  spec.name                   = 'IONFilesystemLib'
-  spec.version                = '1.1.0'
+require 'json'
+package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 
-  spec.summary                = 'Library for accessing iOS filesystem.'
+Pod::Spec.new do |spec|
+  spec.name                   = package['name']
+  spec.version                = package['version']
+
+  spec.summary                = package['description']
   spec.description            = <<-DESC
   A Swift library for iOS that provides access to the native file system. With this library, you can write and read files in different locations, manage directories, and more.
   DESC
 
   spec.homepage               = 'https://github.com/ionic-team/ion-ios-filesystem'
-  spec.license                = { :type => 'MIT', :file => 'LICENSE' }
-  spec.author                 = { 'OutSystems Mobile Ecosystem' => 'rd.mobileecosystem.team@outsystems.com' }
+  spec.license                = { :type => package['license'], :file => 'LICENSE' }
+  spec.author                 = { package['author'] => package['email'] }
   
   spec.source                 = { :http => "https://github.com/ionic-team/ion-ios-filesystem/releases/download/#{spec.version}/IONFilesystemLib.zip", :type => "zip" }
   spec.vendored_frameworks    = "IONFilesystemLib.xcframework"
