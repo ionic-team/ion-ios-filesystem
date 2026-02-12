@@ -1,9 +1,3 @@
-## 1.1.1
-
-### Fix
-
-- Align iOS error codes with Android when file does not exist (return `OS-PLUG-FILE-0008` instead of `OS-PLUG-FILE-0013`)
-
 ## 1.1.0
 
 ### Features
