@@ -292,7 +292,7 @@ private extension IONFILEManager {
             with: "/",
             options: .regularExpression
         )
-        if (urlToReturn.absoluteString.contains(":///")) {
+        if urlToReturn.absoluteString.contains(":///") {
             // the regex may ommit a slash after ://, which is incorrect because it breaks in case of an absolute file path
             urlStringWithoutDuplicateSeparators = urlStringWithoutDuplicateSeparators.replacingOccurrences(of: "://", with: ":///")
         }
