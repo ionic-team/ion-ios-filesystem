@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/ionic-team/ion-ios-filesystem/compare/1.1.0...1.1.1) (2026-02-13)
+
+
+### Bug Fixes
+
+* Inconsistent error codes when missing file ([#14](https://github.com/ionic-team/ion-ios-filesystem/issues/14)) ([75d2681](https://github.com/ionic-team/ion-ios-filesystem/commit/75d26811672e6f0cc86dc2ff1a17c25a58a105fb))
+
 ## 1.1.0
 
 ### Features
