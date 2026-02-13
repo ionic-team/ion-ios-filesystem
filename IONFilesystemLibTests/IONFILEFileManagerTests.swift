@@ -54,6 +54,18 @@ extension IONFILEFileManagerTests {
         XCTAssertThrowsError(try fetchEntireContent(forURL: fileURL, withEncoding: .string(encoding: .utf8)))
     }
     
+    func test_readEntireFile_thatDoesntExist_returnsFileNotFound() throws {
+        // Given
+        createFileManager(fileExists: false)
+        let fileURL = URL(filePath: "/file/directory")
+
+        // When
+        XCTAssertThrowsError(try sut.readEntireFile(atURL: fileURL, withEncoding: .string(encoding: .utf8))) {
+            //Then
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .fileNotFound(atPath: fileURL.urlPath))
+        }
+    }
+    
     func test_readEntireFile_offsetAndLengthWithExampleEncoding_returnsCorrectData() throws {
         // Given
         createFileManager()
@@ -104,7 +116,7 @@ extension IONFILEFileManagerTests {
         let result = try sut.readEntireFile(atURL: fileURL, withEncoding: .string(encoding: encoding), andOffset: offset, andLength: length)
         
         // Then
-        guard case .string(let resultEncoding, let resultValue) = result else {
+        guard case .string(_, let resultValue) = result else {
             XCTFail("Wrong result type")
             return
         }
@@ -160,6 +172,18 @@ extension IONFILEFileManagerTests {
 
         // When and Then
         XCTAssertThrowsError(try fetchChunkedContent(forURL: fileURL, withEncoding: .string(encoding: .utf8)))
+    }
+    
+    func test_readFileInChunks_thatDoesntExist_returnsFileNotFound() throws {
+        // Given
+        createFileManager(fileExists: false)
+        let fileURL = URL(filePath: "/file/directory")
+        
+        // When
+        XCTAssertThrowsError(try fetchChunkedContent(forURL: fileURL, withEncoding: .string(encoding: .utf8))) {
+            // Then
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .fileNotFound(atPath: fileURL.urlPath))
+        }
     }
     
     func test_readFileInChunks_withOffsetAndLength_returnsContentSuccessfully() throws {
@@ -505,11 +529,11 @@ extension IONFILEFileManagerTests {
         // Then
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
         XCTAssertEqual(fileManager.capturedPath, parentFolderURL)
-
+        
+        fileManager.fileExists = true
         let savedFileContent = try fetchEntireContent(forURL: fileURL, withEncoding: .string(encoding: stringEncoding))
         XCTAssertEqual(savedFileContent, contentToSave)
-
-        fileManager.fileExists = true
+        
         try sut.deleteFile(atURL: fileURL)  // keep things clean by deleting created file
     }
 
@@ -610,11 +634,11 @@ extension IONFILEFileManagerTests {
         XCTAssertEqual(fileManager.capturedIntermediateDirectories, shouldIncludeIntermediateDirectories)
 
         // Then
+        fileManager.fileExists = true
         let savedFileContent = try fetchEntireContent(forURL: fileURL, withEncoding: .string(encoding: stringEncoding))
 
         XCTAssertEqual(savedFileContent, contentToAdd)
 
-        fileManager.fileExists = true
         try sut.deleteFile(atURL: fileURL)  // keep things clean by deleting created file
     }
 
@@ -731,13 +755,25 @@ extension IONFILEFileManagerTests {
             XCTAssertEqual($0 as? MockFileManagerError, error)
         }
     }
+    
+    func test_getItemAttributes_fileDoesntExist_returnsFileNotFound() {
+        // Given
+        createFileManager(fileExists: false)
+        let testURL = URL(filePath: "/test/missing-file")
+
+        // When
+        XCTAssertThrowsError(try sut.getItemAttributes(atURL: testURL)) {
+            // Then
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .fileNotFound(atPath: testURL.urlPath))
+        }
+    }
 }
 
 // MARK: - 'renameItem' tests
 extension IONFILEFileManagerTests {
     func test_renameItem_shouldBeSuccessful() throws {
         // Given
-        let fileManager = createFileManager(fileExists: false)
+        let fileManager = createFileManager()
         let originPath = URL(filePath: "/test/origin")
         let destinationPath = URL(filePath: "/test/destination")
 
@@ -751,7 +787,7 @@ extension IONFILEFileManagerTests {
 
     func test_renameItem_sameOriginAndDestination_shouldDoNothing() throws {
         // Given
-        let fileManager = createFileManager(fileExists: false)
+        let fileManager = createFileManager()
         let originPath = URL(filePath: "/test/origin")
         let destinationPath = URL(filePath: "/test/origin")
 
@@ -761,6 +797,19 @@ extension IONFILEFileManagerTests {
         // Then
         XCTAssertNil(fileManager.capturedOriginPath)
         XCTAssertNil(fileManager.capturedDestinationPath)
+    }
+    
+    func test_renameItem_fileDoesntExist_returnsFileNotFound() {
+        // Given
+        createFileManager(fileExists: false)
+        let originPath = URL(filePath: "/test/origin")
+        let destinationPath = URL(filePath: "/test/destination")
+
+        // When
+        XCTAssertThrowsError(try sut.renameItem(fromURL: originPath, toURL: destinationPath)) {
+            // Then
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .fileNotFound(atPath: originPath.urlPath))
+        }
     }
 
     func test_renameDirectory_alreadyExisting_shouldBeSuccessful() throws {
@@ -811,7 +860,7 @@ extension IONFILEFileManagerTests {
 extension IONFILEFileManagerTests {
     func test_copyItem_shouldBeSuccessful() throws {
         // Given
-        let fileManager = createFileManager(fileExists: false)
+        let fileManager = createFileManager()
         let originPath = URL(filePath: "/test/origin")
         let destinationPath = URL(filePath: "/test/destination")
 
@@ -825,7 +874,7 @@ extension IONFILEFileManagerTests {
 
     func test_copyItem_sameOriginAndDestination_shouldDoNothing() throws {
         // Given
-        let fileManager = createFileManager(fileExists: false)
+        let fileManager = createFileManager()
         let originPath = URL(filePath: "/test/origin")
         let destinationPath = URL(filePath: "/test/origin")
 
@@ -836,6 +885,19 @@ extension IONFILEFileManagerTests {
         XCTAssertNil(fileManager.capturedOriginPath)
         XCTAssertNil(fileManager.capturedDestinationPath)
 
+    }
+    
+    func test_copyItem_fileDoesntExist_returnsFileNotFound() {
+        // Given
+        createFileManager(fileExists: false)
+        let originPath = URL(filePath: "/test/origin")
+        let destinationPath = URL(filePath: "/test/destination")
+        
+        // When
+        XCTAssertThrowsError(try sut.copyItem(fromURL: originPath, toURL: destinationPath)) {
+            // Then
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .fileNotFound(atPath: originPath.urlPath))
+        }
     }
 
     func test_copyDirectory_alreadyExisting_shouldBeSuccessful() throws {
