@@ -69,7 +69,7 @@ final class IONFILEDirectoryManagerTests: XCTestCase {
     // MARK: - 'removeDirectory' tests
     func test_removeDirectory_butFails_shouldReturnAnError() {
         let error = MockFileManagerError.deleteDirectoryError
-        createFileManager(with: error)
+        createFileManager(with: error, exclusions: [])
         let testDirectory = URL(filePath: "/test/directory")
         let shouldIncludeIntermediateDirectories = true
 
@@ -81,10 +81,24 @@ final class IONFILEDirectoryManagerTests: XCTestCase {
             XCTAssertEqual($0 as? MockFileManagerError, error)
         }
     }
+    
+    func test_removeDirectory_butFails_shouldReturnFileNotFound() {
+        createFileManager(fileExists: false, exclusions: [])
+        let testDirectory = URL(filePath: "/test/directory")
+        let shouldIncludeIntermediateDirectories = true
+
+        // When
+        XCTAssertThrowsError(
+            try sut.removeDirectory(atURL: testDirectory, includeIntermediateDirectories: shouldIncludeIntermediateDirectories)
+        ) {
+            // Then
+            XCTAssertEqual($0 as? IONFILEFileManagerError,.fileNotFound(atPath: testDirectory.urlPath))
+        }
+    }
 
     func test_removeDirectory_includingIntermediateDirectories_shouldBeSuccessful() throws {
         // Given
-        let fileManager = createFileManager()
+        let fileManager = createFileManager(exclusions: [])
         let testDirectory = URL(filePath: "/test/directory")
         let shouldIncludeIntermediateDirectories = true
 
@@ -97,7 +111,7 @@ final class IONFILEDirectoryManagerTests: XCTestCase {
 
     func test_removeDirectory_excludingIntermediateDirectories_directoryDoesntHaveContent_shouldBeSuccessful() throws {
         // Given
-        let fileManager = createFileManager()
+        let fileManager = createFileManager(exclusions: [])
         let testDirectory = URL(filePath: "/test/directory")
         let shouldIncludeIntermediateDirectories = false
 
@@ -109,7 +123,7 @@ final class IONFILEDirectoryManagerTests: XCTestCase {
     }
 
     func test_removeDirectory_excludingIntermediateDirectories_directoryHasContent_shouldReturnAnError() {
-        createFileManager(shouldDirectoryHaveContent: true)
+        createFileManager(shouldDirectoryHaveContent: true, exclusions: [])
         let testDirectory = URL(filePath: "/test/directory")
         let shouldIncludeIntermediateDirectories = false
 
@@ -125,7 +139,7 @@ final class IONFILEDirectoryManagerTests: XCTestCase {
     // MARK: - 'listDirectory' tests
     func test_listDirectory_withNoContent_shouldReturnEmptyArray() throws {
         // Given
-        let fileManager = createFileManager()
+        let fileManager = createFileManager(exclusions: [])
         let testDirectory = URL(filePath: "/test/directory")
 
         // When
@@ -139,7 +153,7 @@ final class IONFILEDirectoryManagerTests: XCTestCase {
     // MARK: - 'listDirectory' tests
     func test_listDirectory_withContent_shouldReturnNotEmptyArray() throws {
         // Given
-        let fileManager = createFileManager(shouldDirectoryHaveContent: true)
+        let fileManager = createFileManager(shouldDirectoryHaveContent: true, exclusions: [])
         let testDirectory = URL(filePath: "/test/directory")
 
         // When
@@ -153,7 +167,7 @@ final class IONFILEDirectoryManagerTests: XCTestCase {
     func test_listDirectory_butFails_shouldReturnAnError() {
         // Given
         let error = MockFileManagerError.readDirectoryError
-        createFileManager(with: error)
+        createFileManager(with: error, exclusions: [])
         let testDirectory = URL(filePath: "/test/directory")
 
         // When
@@ -162,6 +176,20 @@ final class IONFILEDirectoryManagerTests: XCTestCase {
         ) {
             // Then
             XCTAssertEqual($0 as? MockFileManagerError, error)
+        }
+    }
+    
+    func test_listDirectory_butFails_shouldReturnFileNotFound() {
+        // Given
+        createFileManager(fileExists: false, exclusions: [])
+        let testDirectory = URL(filePath: "/test/directory")
+
+        // When
+        XCTAssertThrowsError(
+            try sut.listDirectory(atURL: testDirectory)
+        ) {
+            // Then
+            XCTAssertEqual($0 as? IONFILEFileManagerError, .fileNotFound(atPath: testDirectory.urlPath))
         }
     }
 }

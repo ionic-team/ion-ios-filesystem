@@ -27,6 +27,9 @@ extension IONFILEManager: IONFILEDirectoryManager {
 
     public func removeDirectory(atURL pathURL: URL, includeIntermediateDirectories: Bool) throws {
         try withSecurityScopedAccess(to: pathURL) {
+            guard fileManager.fileExists(atPath: pathURL.urlPath) else {
+                throw IONFILEFileManagerError.fileNotFound(atPath: pathURL.urlPath)
+            }
             if !includeIntermediateDirectories {
                 let directoryContents = try listDirectory(atURL: pathURL)
                 if !directoryContents.isEmpty {
@@ -40,7 +43,10 @@ extension IONFILEManager: IONFILEDirectoryManager {
 
     public func listDirectory(atURL pathURL: URL) throws -> [URL] {
         try withSecurityScopedAccess(to: pathURL) {
-            try fileManager.contentsOfDirectory(at: pathURL, includingPropertiesForKeys: nil)
+            guard fileManager.fileExists(atPath: pathURL.urlPath) else {
+                throw IONFILEFileManagerError.fileNotFound(atPath: pathURL.urlPath)
+            }
+            return try fileManager.contentsOfDirectory(at: pathURL, includingPropertiesForKeys: nil)
         }
     }
 }
@@ -56,8 +62,11 @@ extension IONFILEManager: IONFILEFileManager {
     
     public func readEntireFile(atURL fileURL: URL, withEncoding encoding: IONFILEEncoding, andOffset offset: Int, andLength length: Int) throws -> IONFILEEncodingValueMapper {
         try withSecurityScopedAccess(to: fileURL) {
+            guard fileManager.fileExists(atPath: fileURL.urlPath) else {
+                throw IONFILEFileManagerError.fileNotFound(atPath: fileURL.urlPath)
+            }
             let result: IONFILEEncodingValueMapper
-            if (offset > 0 || length > 0) {
+            if offset > 0 || length > 0 {
                 result = try readPartialFile(fileURL, encoding, offset, length)
             } else {
                 switch encoding {
@@ -75,7 +84,10 @@ extension IONFILEManager: IONFILEFileManager {
     
     public func readFileInChunks(atURL fileURL: URL, withEncoding encoding: IONFILEEncoding, andChunkSize chunkSize: Int, andOffset offset: Int, andLength length: Int) throws -> IONFILEChunkPublisher {
         try withSecurityScopedAccess(to: fileURL) {
-            .init(fileURL, chunkSize, encoding, offset, length)
+            guard fileManager.fileExists(atPath: fileURL.urlPath) else {
+                throw IONFILEFileManagerError.fileNotFound(atPath: fileURL.urlPath)
+            }
+            return .init(fileURL, chunkSize, encoding, offset, length)
         }
     }
 
@@ -147,6 +159,9 @@ extension IONFILEManager: IONFILEFileManager {
 
     public func getItemAttributes(atURL url: URL) throws -> IONFILEItemAttributeModel {
         try withSecurityScopedAccess(to: url) {
+            guard fileManager.fileExists(atPath: url.urlPath) else {
+                throw IONFILEFileManagerError.fileNotFound(atPath: url.urlPath)
+            }
             let attributesDictionary = try fileManager.attributesOfItem(atPath: url.urlPath)
             return .create(from: attributesDictionary)
         }
@@ -154,6 +169,9 @@ extension IONFILEManager: IONFILEFileManager {
 
     public func renameItem(fromURL originURL: URL, toURL destinationURL: URL) throws {
         try withSecurityScopedAccess(to: originURL) {
+            guard fileManager.fileExists(atPath: originURL.urlPath) else {
+                throw IONFILEFileManagerError.fileNotFound(atPath: originURL.urlPath)
+            }
             try withSecurityScopedAccess(to: destinationURL) {
                 guard try shouldPerformDualPathOperation(fromURL: originURL, toURL: destinationURL) else {
                     return
@@ -165,6 +183,9 @@ extension IONFILEManager: IONFILEFileManager {
 
     public func copyItem(fromURL originURL: URL, toURL destinationURL: URL) throws {
         try withSecurityScopedAccess(to: originURL) {
+            guard fileManager.fileExists(atPath: originURL.urlPath) else {
+                throw IONFILEFileManagerError.fileNotFound(atPath: originURL.urlPath)
+            }
             try withSecurityScopedAccess(to: destinationURL) {
                 guard try shouldPerformDualPathOperation(fromURL: originURL, toURL: destinationURL) else {
                     return
@@ -271,7 +292,7 @@ private extension IONFILEManager {
             with: "/",
             options: .regularExpression
         )
-        if (urlToReturn.absoluteString.contains(":///")) {
+        if urlToReturn.absoluteString.contains(":///") {
             // the regex may ommit a slash after ://, which is incorrect because it breaks in case of an absolute file path
             urlStringWithoutDuplicateSeparators = urlStringWithoutDuplicateSeparators.replacingOccurrences(of: "://", with: ":///")
         }
