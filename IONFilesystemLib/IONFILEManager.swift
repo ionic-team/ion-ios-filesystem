@@ -66,7 +66,7 @@ extension IONFILEManager: IONFILEFileManager {
                 throw IONFILEFileManagerError.fileNotFound(atPath: fileURL.urlPath)
             }
             let result: IONFILEEncodingValueMapper
-            if (offset > 0 || length > 0) {
+            if offset > 0 || length > 0 {
                 result = try readPartialFile(fileURL, encoding, offset, length)
             } else {
                 switch encoding {
