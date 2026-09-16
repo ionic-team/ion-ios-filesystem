@@ -4,7 +4,7 @@ A Swift library for iOS that provides access to the native file system. With thi
 
 ## Requirements
 
-- iOS 14.0+
+- iOS 15.0+
 - Swift 5.0+
 - Xcode 15.0+
 
