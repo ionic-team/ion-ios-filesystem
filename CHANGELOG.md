@@ -1,3 +1,16 @@
+# [2.0.0](https://github.com/ionic-team/ion-ios-filesystem/compare/1.1.4...2.0.0) (2026-09-16)
+
+
+### Features
+
+* bump minimum deployment target to iOS 15 ([#18](https://github.com/ionic-team/ion-ios-filesystem/issues/18)) ([9fb9683](https://github.com/ionic-team/ion-ios-filesystem/commit/9fb968396eabc77c1fddf2cbe0fb56c6c8340549))
+
+
+### BREAKING CHANGES
+
+* the minimum supported iOS version is now 15.0. Apps
+with a deployment target of iOS 14 can no longer consume this library.
+
 ## [1.1.4](https://github.com/ionic-team/ion-ios-filesystem/compare/1.1.3...1.1.4) (2026-09-08)
 
 
