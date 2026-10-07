@@ -10,12 +10,24 @@ A Swift library for iOS that provides access to the native file system. With thi
 
 ## Installation
 
+> Replace `${version to use}` below with the version you want to use. Check the [Releases page](https://github.com/ionic-team/OSFilesystemLib-iOS/releases) for available versions.
+
+### Swift Package Manager
+
+Add the following to your `Package.swift` file:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/ionic-team/OSFilesystemLib-iOS.git", from: "${version to use}")
+]
+```
+
 ### CocoaPods
 
 `ion-ios-filesystem` is available through [CocoaPods](https://cocoapods.org). Add this to your Podfile:
 
 ```ruby
-pod 'IONFilesystemLib', '~> 2.0.0'
+pod 'IONFilesystemLib', '~> ${version to use}'
 ```
 
 ## Quick Start
