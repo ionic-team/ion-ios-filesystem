@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/ionic-team/ion-ios-filesystem/compare/2.0.0...2.0.1) (2026-10-14)
+
+
+### Bug Fixes
+
+* contain check rejected not-yet-created files under /private aliased directories ([#20](https://github.com/ionic-team/ion-ios-filesystem/issues/20)) ([4e8aa68](https://github.com/ionic-team/ion-ios-filesystem/commit/4e8aa68ff54af4ce2b1b9151971925b517020322))
+
 # [2.0.0](https://github.com/ionic-team/ion-ios-filesystem/compare/1.1.4...2.0.0) (2026-09-16)
 
 
