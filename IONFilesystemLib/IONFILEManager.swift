@@ -262,8 +262,8 @@ private extension IONFILEManager {
     /// same as, or a descendant of, `directory`'s canonical path. Resolving symlinks also
     /// normalizes platform aliases like /var vs /private/var to the same real path.
     private func assertContained(_ url: URL, within directory: URL) throws {
-        let canonicalURL = url.resolvingSymlinksInPath()
-        let canonicalDirectory = directory.resolvingSymlinksInPath()
+        let canonicalURL = canonicalize(url)
+        let canonicalDirectory = canonicalize(directory)
         let directoryPathWithSeparator = canonicalDirectory.urlPath.hasSuffix("/")
             ? canonicalDirectory.urlPath
             : canonicalDirectory.urlPath + "/"
@@ -275,6 +275,20 @@ private extension IONFILEManager {
                 directory: canonicalDirectory.urlPath
             )
         }
+    }
+
+    /// `resolvingSymlinksInPath()` only strips aliases like /private/var when the whole path exists,
+    /// so a not-yet-created file would canonicalize differently from its parent directory.
+    /// Resolve the deepest existing ancestor and re-append the missing components instead.
+    private func canonicalize(_ url: URL) -> URL {
+        guard url.isFileURL else { return url.resolvingSymlinksInPath() }
+        var existing = url.standardizedFileURL
+        var missingComponents: [String] = []
+        while existing.path != "/", !FileManager.default.fileExists(atPath: existing.path) {
+            missingComponents.insert(existing.lastPathComponent, at: 0)
+            existing.deleteLastPathComponent()
+        }
+        return missingComponents.reduce(existing.resolvingSymlinksInPath()) { $0.appendingPathComponent($1) }
     }
 
     func resolveRawURL(from path: String) throws -> URL {

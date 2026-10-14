@@ -528,6 +528,23 @@ extension IONFILEFileManagerTests {
         }
     }
 
+    func test_getFileURL_fromDirectorySearchPath_resolvedViaPrivateVarAlias_containsNotYetCreatedFile() throws {
+        // Given: an existing directory reached via "/private/var" and a file that doesn't exist yet
+        // (the iOS Directory.Temporary scenario)
+        let uniqueName = "ionfile-test-\(UUID().uuidString)"
+        let privateVarFormDirectory = URL(fileURLWithPath: "/private/var/tmp/\(uniqueName)/allowed")
+        try FileManager.default.createDirectory(at: privateVarFormDirectory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: URL(fileURLWithPath: "/private/var/tmp/\(uniqueName)")) }
+
+        createFileManager(urlsWithinDirectory: [privateVarFormDirectory])
+
+        // When
+        let returnedURL = try sut.getFileURL(atPath: "new-file.txt", withSearchPath: .directory(type: .cache))
+
+        // Then
+        XCTAssertEqual(privateVarFormDirectory.appendingPathComponent("new-file.txt", isDirectory: true), returnedURL)
+    }
+
     func test_resolvingSymlinksInPath_privateVarAndVarAliases_canonicalizeToTheSameRealPath() {
         // Given: the two path forms iOS uses interchangeably for the same real location
         let varFormURL = URL(fileURLWithPath: "/var/tmp")
